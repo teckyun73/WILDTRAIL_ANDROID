@@ -597,7 +597,9 @@ private fun RoutePreviewPanel(
             Button(
                 onClick = onOpenNativeMap,
                 colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("trip-open-native-map-button"),
             ) {
                 Text("앱 지도 보기")
             }

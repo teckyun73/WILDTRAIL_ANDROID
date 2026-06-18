@@ -8,7 +8,7 @@ import com.wildtrail.app.feature.species.SpeciesViewModel
 import com.wildtrail.app.feature.status.StatusViewModel
 import com.wildtrail.app.feature.trips.TripsViewModel
 
-internal data class WildTrailViewModels(
+data class WildTrailViewModels(
     val settings: AppSettingsViewModel,
     val identify: IdentifyViewModel,
     val records: RecordsViewModel,
@@ -28,5 +28,4 @@ internal fun wildTrailViewModels(): WildTrailViewModels {
         trips = viewModel(),
     )
 }
-
 

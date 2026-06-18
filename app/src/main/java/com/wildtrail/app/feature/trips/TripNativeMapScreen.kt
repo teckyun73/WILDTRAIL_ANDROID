@@ -138,14 +138,18 @@ fun TripNativeMapScreen(
                     .weight(1f),
             ) {
                 Box(modifier = Modifier.fillMaxSize()) {
-                    NativeRouteMap(
-                        stops = stops,
-                        hasLocationPermission = hasLocationPermission,
-                        locationRequestCount = locationRequestCount,
-                        selectedStop = selectedStop,
-                        onStopSelected = { selectedStop = it },
-                        modifier = Modifier.fillMaxSize(),
-                    )
+                    if (BuildConfig.HAS_MAPS_API_KEY) {
+                        NativeRouteMap(
+                            stops = stops,
+                            hasLocationPermission = hasLocationPermission,
+                            locationRequestCount = locationRequestCount,
+                            selectedStop = selectedStop,
+                            onStopSelected = { selectedStop = it },
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    } else {
+                        MissingMapsKeyPanel(modifier = Modifier.fillMaxSize())
+                    }
                     Button(
                         onClick = {
                             if (context.hasLocationPermission()) {
@@ -185,22 +189,7 @@ fun TripNativeMapScreen(
                             )
                         }
                     }
-                    if (!BuildConfig.HAS_MAPS_API_KEY) {
-                        Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            tonalElevation = 2.dp,
-                            modifier = Modifier
-                                .align(Alignment.TopCenter)
-                                .padding(12.dp),
-                        ) {
-                            Text(
-                                "Google Maps API 키를 설정하면 지도 타일과 마커가 표시됩니다.",
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
+
                 }
             }
         }
@@ -253,6 +242,21 @@ fun TripNativeMapScreen(
     }
 }
 
+@Composable
+private fun MissingMapsKeyPanel(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .background(Forest.copy(alpha = 0.08f))
+            .padding(16.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            "Google Maps API 키를 설정하면 지도 타일과 마커가 표시됩니다.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
 @Composable
 private fun EmptyMapPanel() {
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
@@ -355,20 +359,27 @@ private fun NativeRouteMap(
     }
 
     DisposableEffect(lifecycle, mapView) {
+        var isDestroyed = false
+        fun destroyMapView() {
+            if (!isDestroyed) {
+                isDestroyed = true
+                mapView.onDestroy()
+            }
+        }
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START -> mapView.onStart()
                 Lifecycle.Event.ON_RESUME -> mapView.onResume()
                 Lifecycle.Event.ON_PAUSE -> mapView.onPause()
                 Lifecycle.Event.ON_STOP -> mapView.onStop()
-                Lifecycle.Event.ON_DESTROY -> mapView.onDestroy()
+                Lifecycle.Event.ON_DESTROY -> destroyMapView()
                 else -> Unit
             }
         }
         lifecycle.addObserver(observer)
         onDispose {
             lifecycle.removeObserver(observer)
-            mapView.onDestroy()
+            destroyMapView()
         }
     }
 
@@ -519,8 +530,4 @@ internal fun routeStopHue(stop: RouteStop): Float {
         else -> BitmapDescriptorFactory.HUE_RED
     }
 }
-
-
-
-
 

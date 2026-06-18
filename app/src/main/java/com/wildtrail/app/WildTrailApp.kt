@@ -20,7 +20,7 @@ fun WildTrailApp() {
 }
 
 @Composable
-private fun WildTrailAppContent(viewModels: WildTrailViewModels) {
+fun WildTrailAppContent(viewModels: WildTrailViewModels) {
     val settingsViewModel = viewModels.settings
     val identifyViewModel = viewModels.identify
     var selectedTab by rememberSaveable { mutableStateOf(AppTab.Identify) }
@@ -64,7 +64,4 @@ private fun WildTrailAppContent(viewModels: WildTrailViewModels) {
         }
     }
 }
-
-
-
 
