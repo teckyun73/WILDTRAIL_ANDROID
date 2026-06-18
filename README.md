@@ -1,5 +1,7 @@
 # Android App Setup
 
+[![Android CI](https://github.com/teckyun73/WILDTRAIL_ANDROID/actions/workflows/android-ci.yml/badge.svg)](https://github.com/teckyun73/WILDTRAIL_ANDROID/actions/workflows/android-ci.yml)
+
 This folder contains the first native Android implementation of WildTrail.
 
 ## What Is Included
@@ -74,13 +76,14 @@ After setting the key, run `.\gradlew.bat assembleDebug`, install the debug APK,
 
 ## Local JDK
 
-This project pins Gradle to the Android Studio bundled JBR:
+CI uses Temurin JDK 17 through GitHub Actions. On this Windows development PC, keep machine-specific JDK paths out of the repository and configure them in the user Gradle properties file instead:
 
 ```properties
+# %USERPROFILE%\.gradle\gradle.properties
 org.gradle.java.home=C:/Program Files/Android/Android Studio/jbr
 ```
 
-That avoids build failures seen with the system JDK 26 toolchain.
+Do not commit `org.gradle.java.home` to the project `gradle.properties`; it breaks Linux CI runners.
 
 ## Current Screens
 
@@ -120,11 +123,15 @@ That avoids build failures seen with the system JDK 26 toolchain.
 
 ## Verification
 
-Run these commands from `C:\CURSUR_PJT\Wildtrail\android` before handing off changes:
+GitHub Actions runs this non-emulator verification on every `main` push and pull request:
 
 ```powershell
-.\gradlew.bat testDebugUnitTest --stacktrace
-.\gradlew.bat assembleDebug --stacktrace
+.\gradlew.bat testDebugUnitTest assembleDebug assembleDebugAndroidTest --stacktrace
+```
+
+Before handing off changes locally, also run the emulator UI smoke suite when an AVD is available:
+
+```powershell
 .\gradlew.bat connectedDebugAndroidTest --stacktrace
 ```
 
@@ -148,24 +155,19 @@ No output from the final logcat filter means no recent fatal app crash was detec
 - `StatusViewModel`, `SpeciesViewModel`, `TripsViewModel`, `RecordsViewModel`, and `IdentifyViewModel` state transitions
 - Trip route stop generation and Google Maps / `geo:` URI construction
 - Native map marker filtering, color mapping, and marker hue mapping
-- Compose UI smoke checks for app startup and primary bottom navigation tabs
+- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing, records context, and trip planning form editing
 
 ## Next Implementation Unit
 
-The next practical step is to add UI-level checks for the most important user flows:
+The next practical step is to keep promoting the highest-value manual flows into stable UI tests:
 
 1. Identify screen: pick media, show result, save top candidate.
 2. Species screen: search, open detail, show hotspots.
-3. Trips screen: generate a plan, open the native map, open route handoff.
+3. Trips screen: generate a plan with a fake or seeded backend, open the native map, open route handoff.
 
 Start with the manual QA checklist in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), then promote stable flows into Compose UI tests.
 
 ## Local Tooling Note
 
-The terminal build uses the Android Studio bundled JBR configured in `gradle.properties`. The Android SDK and emulator are expected under `C:\Users\ATECCN\AppData\Local\Android\Sdk` on this PC.
-
-
-
-
-
+The terminal build on this PC uses the Android Studio bundled JBR configured in `%USERPROFILE%\.gradle\gradle.properties`. The Android SDK and emulator are expected under `C:\Users\ATECCN\AppData\Local\Android\Sdk` on this PC.
 
