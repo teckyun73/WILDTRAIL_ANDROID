@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -123,7 +124,9 @@ fun TripsScreen(
                     onValueChange = onSpeciesIdChange,
                     label = { Text("Species ID") },
                     supportingText = { Text("예: pica_pica, grus_japonensis") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("trip-species-id"),
                 )
                 TripSpeciesChooser(
                     speciesState = speciesState,
@@ -135,26 +138,34 @@ fun TripsScreen(
                     value = origin,
                     onValueChange = onOriginChange,
                     label = { Text("출발지") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("trip-origin"),
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
                         value = days,
                         onValueChange = onDaysChange,
                         label = { Text("일수") },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("trip-days"),
                     )
                     OutlinedTextField(
                         value = travelers,
                         onValueChange = onTravelersChange,
                         label = { Text("인원") },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("trip-travelers"),
                     )
                     OutlinedTextField(
                         value = month,
                         onValueChange = onMonthChange,
                         label = { Text("월") },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("trip-month"),
                     )
                 }
                 TripMonthSuggestions(
@@ -167,7 +178,9 @@ fun TripsScreen(
                     value = budget,
                     onValueChange = onBudgetChange,
                     label = { Text("예산(원)") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("trip-budget"),
                 )
                 TripPreferenceControls(
                     transport = transport,
@@ -181,7 +194,9 @@ fun TripsScreen(
                     onClick = onPlanTrip,
                     enabled = !isLoading,
                     colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("trip-plan-button"),
                 ) {
                     Text(if (isLoading) "계획 생성 중..." else "여행 계획 생성")
                 }
@@ -764,5 +779,4 @@ private fun TripDetailField(label: String, value: String) {
 }
 
 private fun formatKrw(value: Int): String = "%,d원".format(value)
-
 
