@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build:
-    name: Unit tests and debug build
+    name: Unit tests and build artifacts
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -35,8 +35,8 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Run JVM tests and assemble debug artifacts
-        run: ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest --stacktrace
+      - name: Run JVM tests and assemble build artifacts
+        run: ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease --stacktrace
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
@@ -56,6 +56,18 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wildtrail-release-artifacts
+          path: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/release/output-metadata.json
+            app/build/outputs/bundle/release/*.aab
+            app/build/outputs/mapping/release/**
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Upload JVM test report
         if: always()
         uses: actions/upload-artifact@v4
@@ -64,3 +76,4 @@ jobs:
           path: app/build/reports/tests/testDebugUnitTest
           if-no-files-found: warn
           retention-days: 14
+

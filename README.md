@@ -121,12 +121,37 @@ Do not commit `org.gradle.java.home` to the project `gradle.properties`; it brea
 - Shows saved species name, timestamp, confidence, media type, location label, and note
 - Refresh button reloads the backend list
 
+
+## Release Build Preparation
+
+The app version defaults are defined in `app/build.gradle.kts`:
+
+```text
+versionCode = 1
+versionName = 0.1.0
+```
+
+Override them for CI or local release candidates with Gradle properties:
+
+```powershell
+.\gradlew.bat assembleRelease bundleRelease '-PVERSION_CODE=2' '-PVERSION_NAME=0.1.1'
+```
+
+Current release verification builds these artifacts:
+
+```text
+app/build/outputs/apk/release/app-release-unsigned.apk
+app/build/outputs/bundle/release/app-release.aab
+```
+
+The release APK is unsigned and intended for build verification only. Before Play Store or external distribution, create a private upload keystore outside the repository and wire signing through local/CI secrets.
+
 ## Verification
 
 GitHub Actions runs this non-emulator verification on every `main` push and pull request:
 
 ```powershell
-.\gradlew.bat testDebugUnitTest assembleDebug assembleDebugAndroidTest --stacktrace
+.\gradlew.bat testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease --stacktrace
 ```
 
 Before handing off changes locally, also run the emulator UI smoke suite when an AVD is available:

@@ -25,6 +25,8 @@ val mapsApiKey = projectSetting("MAPS_API_KEY") ?: ""
 val defaultApiBaseUrl = projectSetting("API_BASE_URL") ?: "http://10.0.2.2:8000"
 val debugApiBaseUrl = projectSetting("DEBUG_API_BASE_URL") ?: defaultApiBaseUrl
 val releaseApiBaseUrl = projectSetting("RELEASE_API_BASE_URL") ?: defaultApiBaseUrl
+val appVersionCode = projectSetting("VERSION_CODE")?.toIntOrNull() ?: 1
+val appVersionName = projectSetting("VERSION_NAME") ?: "0.1.0"
 
 android {
     namespace = "com.wildtrail.app"
@@ -34,8 +36,8 @@ android {
         applicationId = "com.wildtrail.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders["mapsApiKey"] = mapsApiKey
@@ -115,9 +117,4 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
-
-
-
-
-
 
