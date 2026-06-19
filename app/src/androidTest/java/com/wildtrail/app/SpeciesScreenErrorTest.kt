@@ -23,6 +23,63 @@ class SpeciesScreenErrorTest {
     val composeRule = createComposeRule()
 
     @Test
+    fun listErrorShowsRetryAction() {
+        var refreshCount by mutableStateOf(0)
+        var retryCount by mutableStateOf(0)
+
+        composeRule.setContent {
+            WildTrailTheme {
+                SpeciesScreen(
+                    speciesState = SpeciesUiState.Error("도감 목록을 불러올 수 없습니다."),
+                    speciesDetailState = SpeciesDetailUiState.Empty,
+                    hotspotState = HotspotUiState.Empty,
+                    search = "",
+                    onSearchChange = {},
+                    selectedSpeciesId = null,
+                    onSelectSpecies = {},
+                    onPlanTripForSpecies = {},
+                    onRefresh = { refreshCount += 1 },
+                    onRetrySelectedSpecies = { retryCount += 1 },
+                    isLoading = false,
+                )
+            }
+        }
+
+        composeRule.onNodeWithText("도감 연결 실패").assertIsDisplayed()
+        composeRule.onNodeWithText("도감 목록을 불러올 수 없습니다.").assertIsDisplayed()
+        composeRule.onNodeWithTag("species-error-retry-button").performClick()
+
+        composeRule.runOnIdle {
+            assertEquals(1, refreshCount)
+            assertEquals(0, retryCount)
+        }
+    }
+
+    @Test
+    fun emptySearchResultShowsEmptyMessage() {
+        composeRule.setContent {
+            WildTrailTheme {
+                SpeciesScreen(
+                    speciesState = SpeciesUiState.Ready(listOf(speciesFixture())),
+                    speciesDetailState = SpeciesDetailUiState.Empty,
+                    hotspotState = HotspotUiState.Empty,
+                    search = "두루미",
+                    onSearchChange = {},
+                    selectedSpeciesId = null,
+                    onSelectSpecies = {},
+                    onPlanTripForSpecies = {},
+                    onRefresh = {},
+                    onRetrySelectedSpecies = {},
+                    isLoading = false,
+                )
+            }
+        }
+
+        composeRule.onNodeWithText("0종 표시").assertIsDisplayed()
+        composeRule.onNodeWithText("검색 결과가 없습니다.").assertIsDisplayed()
+    }
+
+    @Test
     fun detailAndHotspotErrorsShowRetryActions() {
         var retryCount by mutableStateOf(0)
         var refreshCount by mutableStateOf(0)

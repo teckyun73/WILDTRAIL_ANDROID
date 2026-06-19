@@ -196,14 +196,14 @@ No output from the final logcat filter means no recent fatal app crash was detec
 - `StatusViewModel`, `SpeciesViewModel`, `TripsViewModel`, `RecordsViewModel`, and `IdentifyViewModel` state transitions
 - Trip route stop generation and Google Maps / `geo:` URI construction
 - Native map marker filtering, color mapping, and marker hue mapping
-- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing and environment presets, records context, identify result save actions, species search/detail/hotspot handoff, species error retry actions, and trip planning form editing
+- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing and environment presets, records context, identify result save actions, species search/detail/hotspot handoff, species error retry and empty-result states, and trip planning form editing
 
 ## Next Implementation Unit
 
 The next practical step is to keep promoting the highest-value manual flows into stable UI tests:
 
 1. Identify screen: exercise real picker/recording handoff around the already-covered result save action.
-2. Species screen: add list-level error retry and empty-search result UI checks.
+2. Trips screen: add direct error-state retry and invalid-input UI checks.
 3. Trips screen: generate a plan with a fake or seeded backend, open the native map, open route handoff.
 
 Start with the manual QA checklist in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), keep release/merge notes aligned with [docs/release-operations.md](docs/release-operations.md), then promote stable flows into Compose UI tests.
