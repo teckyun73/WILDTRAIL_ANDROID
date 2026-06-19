@@ -156,15 +156,16 @@ Override them for CI or local release candidates with Gradle properties:
 Current release verification builds these artifacts:
 
 ```text
-app/build/outputs/apk/release/app-release-unsigned.apk
+app/build/outputs/apk/release/app-release-unsigned.apk  # no signing values
+app/build/outputs/apk/release/app-release.apk           # signing values present
 app/build/outputs/bundle/release/app-release.aab
 ```
 
-The release APK is unsigned and intended for build verification only. Before Play Store or external distribution, create a private upload keystore outside the repository and wire signing through local/CI secrets.
+The release APK/AAB is unsigned unless release signing values are supplied through private local properties, Gradle properties, or environment variables. Follow [docs/release-signing.md](docs/release-signing.md) before uploading an internal test build to Play.
 
 ## Repository Operations
 
-Use the pull request and issue templates under `.github/` for scoped changes and bug reports. Release candidate and merge-gate guidance lives in [docs/release-operations.md](docs/release-operations.md), hands-on emulator validation lives in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), privacy and permission review lives in [docs/privacy-and-permissions.md](docs/privacy-and-permissions.md), and Play internal testing preparation lives in [docs/play-internal-testing.md](docs/play-internal-testing.md).
+Use the pull request and issue templates under `.github/` for scoped changes and bug reports. Release candidate and merge-gate guidance lives in [docs/release-operations.md](docs/release-operations.md), hands-on emulator validation lives in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), privacy and permission review lives in [docs/privacy-and-permissions.md](docs/privacy-and-permissions.md), release signing lives in [docs/release-signing.md](docs/release-signing.md), and Play internal testing preparation lives in [docs/play-internal-testing.md](docs/play-internal-testing.md).
 
 ## Quality Checks
 

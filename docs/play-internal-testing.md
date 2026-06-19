@@ -6,6 +6,7 @@ Use this checklist when preparing the first Google Play internal testing track f
 
 - Choose a release version and increment `VERSION_CODE`.
 - Configure `RELEASE_API_BASE_URL`, `PRODUCTION_API_BASE_URL`, and `MAPS_API_KEY` outside the repository.
+- Configure release signing values using `docs/release-signing.md` before uploading to Play.
 - Build the Android App Bundle with release properties:
 
 ```powershell
@@ -23,7 +24,7 @@ Use this checklist when preparing the first Google Play internal testing track f
 
 1. Create or open the Google Play Console app entry for package `com.wildtrail.app`.
 2. Complete app access, ads, content rating, target audience, data safety, and privacy-policy fields.
-3. Upload `app/build/outputs/bundle/release/app-release.aab`.
+3. Upload the signed `app/build/outputs/bundle/release/app-release.aab`.
 4. Add internal testers by email list or Google Group.
 5. Add release notes with commit SHA, CI run URL, backend environment, and known limitations.
 6. Roll out to internal testing only after manual QA passes on at least one emulator and one physical device when available.

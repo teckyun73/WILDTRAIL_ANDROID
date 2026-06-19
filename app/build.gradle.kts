@@ -25,6 +25,10 @@ fun projectSetting(name: String): String? =
             .gradleProperty(name)
             .orNull
             ?.takeIf { it.isNotBlank() }
+        ?: providers
+            .environmentVariable(name)
+            .orNull
+            ?.takeIf { it.isNotBlank() }
 
 val mapsApiKey = projectSetting("MAPS_API_KEY") ?: ""
 val defaultApiBaseUrl = projectSetting("API_BASE_URL") ?: "http://10.0.2.2:8000"
@@ -34,6 +38,17 @@ val stagingApiBaseUrl = projectSetting("STAGING_API_BASE_URL") ?: debugApiBaseUr
 val productionApiBaseUrl = projectSetting("PRODUCTION_API_BASE_URL") ?: releaseApiBaseUrl
 val appVersionCode = projectSetting("VERSION_CODE")?.toIntOrNull() ?: 1
 val appVersionName = projectSetting("VERSION_NAME") ?: "0.1.0"
+val releaseStoreFilePath = projectSetting("RELEASE_STORE_FILE")
+val releaseStorePassword = projectSetting("RELEASE_STORE_PASSWORD")
+val releaseKeyAlias = projectSetting("RELEASE_KEY_ALIAS")
+val releaseKeyPassword = projectSetting("RELEASE_KEY_PASSWORD")
+val hasReleaseSigningConfig =
+    listOf(
+        releaseStoreFilePath,
+        releaseStorePassword,
+        releaseKeyAlias,
+        releaseKeyPassword,
+    ).all { !it.isNullOrBlank() }
 
 android {
     namespace = "com.wildtrail.app"
@@ -56,6 +71,17 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            if (hasReleaseSigningConfig) {
+                storeFile = file(requireNotNull(releaseStoreFilePath))
+                storePassword = requireNotNull(releaseStorePassword)
+                keyAlias = requireNotNull(releaseKeyAlias)
+                keyPassword = requireNotNull(releaseKeyPassword)
+            }
+        }
+    }
+
     buildTypes {
         debug {
             buildConfigField("String", "API_BASE_URL", "\"$debugApiBaseUrl\"")
@@ -64,6 +90,9 @@ android {
         release {
             buildConfigField("String", "API_BASE_URL", "\"$releaseApiBaseUrl\"")
             buildConfigField("Boolean", "ENABLE_HTTP_LOGGING", "false")
+            if (hasReleaseSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

@@ -47,7 +47,7 @@ No output from the final `logcat` filter means no recent fatal app crash was det
 - `wildtrail-release-artifacts`
 - `wildtrail-jvm-test-report`
 
-Artifacts are retained for 14 days. Treat the release APK as unsigned verification output unless signing is explicitly configured through private local or CI secrets.
+Artifacts are retained for 14 days. Treat the release APK as unsigned verification output unless signing is explicitly configured through private local or CI secrets. Release signing setup is documented in `docs/release-signing.md`.
 
 ## Release Candidate Checklist
 
@@ -61,14 +61,16 @@ Artifacts are retained for 14 days. Treat the release APK as unsigned verificati
 3. Confirm these files exist:
 
 ```text
-app/build/outputs/apk/release/app-release-unsigned.apk
+app/build/outputs/apk/release/app-release-unsigned.apk  # no signing values
+app/build/outputs/apk/release/app-release.apk           # signing values present
 app/build/outputs/bundle/release/app-release.aab
 ```
 
 4. Run the manual QA checklist in `docs/manual-qa-checklist.md`.
 5. Confirm API environment values and `MAPS_API_KEY` state are correct for the target build.
-6. Review `docs/privacy-and-permissions.md` and confirm Play Data safety answers still match the build.
-7. Record the commit SHA, CI run URL, artifact names, and QA notes in the release notes.
+6. Confirm release signing values from `docs/release-signing.md` are present for Play upload builds.
+7. Review `docs/privacy-and-permissions.md` and confirm Play Data safety answers still match the build.
+8. Record the commit SHA, CI run URL, artifact names, and QA notes in the release notes.
 
 ## Current Quality Gates
 
@@ -83,4 +85,5 @@ Keep machine-specific values out of Git:
 
 - `org.gradle.java.home` belongs in `%USERPROFILE%\.gradle\gradle.properties`.
 - `MAPS_API_KEY` belongs in `local.properties` or CI secrets.
+- Release signing values belong in `local.properties`, Gradle properties, environment variables, or CI secrets; see `docs/release-signing.md`.
 - API URLs can be set with `API_BASE_URL`, `DEBUG_API_BASE_URL`, `RELEASE_API_BASE_URL`, `STAGING_API_BASE_URL`, and `PRODUCTION_API_BASE_URL`.

@@ -9,3 +9,7 @@ app/release/
 
 .DS_Store
 Thumbs.db
+*.jks
+*.keystore
+*.p12
+keystores/
