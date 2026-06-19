@@ -196,19 +196,18 @@ No output from the final logcat filter means no recent fatal app crash was detec
 - `StatusViewModel`, `SpeciesViewModel`, `TripsViewModel`, `RecordsViewModel`, and `IdentifyViewModel` state transitions
 - Trip route stop generation and Google Maps / `geo:` URI construction
 - Native map marker filtering, color mapping, and marker hue mapping
-- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing and environment presets, records context, identify result save actions, species search/detail/hotspot handoff, species error retry and empty-result states, trip error retry, unmatched species guidance, and trip numeric input wiring
+- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing and environment presets, records context, identify result save actions, species search/detail/hotspot handoff, species error retry and empty-result states, trip error retry, species chooser refresh/error handling, unmatched species guidance, and trip numeric input wiring
 
 ## Next Implementation Unit
 
 The next practical step is to keep promoting the highest-value manual flows into stable UI tests:
 
 1. Identify screen: exercise real picker/recording handoff around the already-covered result save action.
-2. Trips screen: add species chooser refresh/error UI coverage.
-3. Trips screen: generate a plan with a fake or seeded backend, open the native map, open route handoff.
+2. Trips screen: expand generated-plan UI checks for replan, edit conditions, and route handoff controls.
+3. Trips screen: add focused native map empty/partial route UI checks.
 
 Start with the manual QA checklist in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), keep release/merge notes aligned with [docs/release-operations.md](docs/release-operations.md), then promote stable flows into Compose UI tests.
 
 ## Local Tooling Note
 
 The terminal build on this PC uses the Android Studio bundled JBR configured in `%USERPROFILE%\.gradle\gradle.properties`. The Android SDK and emulator are expected under `C:\Users\ATECCN\AppData\Local\Android\Sdk` on this PC.
-

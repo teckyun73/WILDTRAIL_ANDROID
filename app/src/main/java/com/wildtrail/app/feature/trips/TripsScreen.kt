@@ -381,7 +381,9 @@ private fun TripSpeciesChooser(
             SpeciesUiState.Idle -> Button(
                 onClick = onRefreshSpecies,
                 colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("trip-species-refresh-button"),
             ) {
                 Text("도감 목록 불러오기")
             }
@@ -410,7 +412,11 @@ private fun TripSpeciesChooser(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall,
                 )
-                Button(onClick = onRefreshSpecies, colors = ButtonDefaults.buttonColors(containerColor = Forest)) {
+                Button(
+                    onClick = onRefreshSpecies,
+                    colors = ButtonDefaults.buttonColors(containerColor = Forest),
+                    modifier = Modifier.testTag("trip-species-error-retry-button"),
+                ) {
                     Text("재시도")
                 }
             }
@@ -783,4 +789,3 @@ private fun TripDetailField(label: String, value: String) {
 }
 
 private fun formatKrw(value: Int): String = "%,d원".format(value)
-

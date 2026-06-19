@@ -27,6 +27,96 @@ class TripsScreenStateTest {
     val composeRule = createComposeRule()
 
     @Test
+    fun speciesChooserIdleRefreshButtonRunsRefreshAction() {
+        var refreshCount by mutableStateOf(0)
+
+        composeRule.setContent {
+            WildTrailTheme {
+                TripsScreen(
+                    nativeMapPlan = null,
+                    onCloseNativeMap = {},
+                    speciesId = "lynx",
+                    onSpeciesIdChange = {},
+                    speciesState = SpeciesUiState.Idle,
+                    onSelectSpecies = {},
+                    onRefreshSpecies = { refreshCount += 1 },
+                    origin = "서울역",
+                    onOriginChange = {},
+                    days = "1",
+                    onDaysChange = {},
+                    budget = "150000",
+                    onBudgetChange = {},
+                    travelers = "1",
+                    onTravelersChange = {},
+                    month = "5",
+                    onMonthChange = {},
+                    transport = "public",
+                    onTransportChange = {},
+                    accommodation = "guesthouse",
+                    onAccommodationChange = {},
+                    difficulty = "easy",
+                    onDifficultyChange = {},
+                    tripState = TripUiState.Empty,
+                    onPlanTrip = {},
+                    onOpenNativeMap = {},
+                    isLoading = false,
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("trip-species-refresh-button").performClick()
+
+        composeRule.runOnIdle {
+            assertEquals(1, refreshCount)
+        }
+    }
+
+    @Test
+    fun speciesChooserErrorRetryButtonRunsRefreshAction() {
+        var refreshCount by mutableStateOf(0)
+
+        composeRule.setContent {
+            WildTrailTheme {
+                TripsScreen(
+                    nativeMapPlan = null,
+                    onCloseNativeMap = {},
+                    speciesId = "lynx",
+                    onSpeciesIdChange = {},
+                    speciesState = SpeciesUiState.Error("도감 목록을 불러올 수 없습니다."),
+                    onSelectSpecies = {},
+                    onRefreshSpecies = { refreshCount += 1 },
+                    origin = "서울역",
+                    onOriginChange = {},
+                    days = "1",
+                    onDaysChange = {},
+                    budget = "150000",
+                    onBudgetChange = {},
+                    travelers = "1",
+                    onTravelersChange = {},
+                    month = "5",
+                    onMonthChange = {},
+                    transport = "public",
+                    onTransportChange = {},
+                    accommodation = "guesthouse",
+                    onAccommodationChange = {},
+                    difficulty = "easy",
+                    onDifficultyChange = {},
+                    tripState = TripUiState.Empty,
+                    onPlanTrip = {},
+                    onOpenNativeMap = {},
+                    isLoading = false,
+                )
+            }
+        }
+
+        composeRule.onNodeWithText("종 목록을 불러오지 못했습니다.").assertIsDisplayed()
+        composeRule.onNodeWithTag("trip-species-error-retry-button").performClick()
+
+        composeRule.runOnIdle {
+            assertEquals(1, refreshCount)
+        }
+    }
+@Test
     fun tripErrorShowsRetryAction() {
         var retryCount by mutableStateOf(0)
 
