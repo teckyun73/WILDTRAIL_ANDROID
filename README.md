@@ -134,6 +134,10 @@ Do not commit `org.gradle.java.home` to the project `gradle.properties`; it brea
 - Refresh button reloads the backend list
 
 
+## App Identity And Release Preparation
+
+The app uses the display name `WildTrail`, a custom adaptive launcher icon, and Android 12+ splash screen resources. Keep the app identity stable for internal testing unless a release note explicitly calls out the change.
+
 ## Release Build Preparation
 
 The app version defaults are defined in `app/build.gradle.kts`:
@@ -160,7 +164,7 @@ The release APK is unsigned and intended for build verification only. Before Pla
 
 ## Repository Operations
 
-Use the pull request and issue templates under `.github/` for scoped changes and bug reports. Release candidate and merge-gate guidance lives in [docs/release-operations.md](docs/release-operations.md), and hands-on emulator validation lives in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md).
+Use the pull request and issue templates under `.github/` for scoped changes and bug reports. Release candidate and merge-gate guidance lives in [docs/release-operations.md](docs/release-operations.md), hands-on emulator validation lives in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), privacy and permission review lives in [docs/privacy-and-permissions.md](docs/privacy-and-permissions.md), and Play internal testing preparation lives in [docs/play-internal-testing.md](docs/play-internal-testing.md).
 
 ## Quality Checks
 
@@ -206,7 +210,8 @@ No output from the final logcat filter means no recent fatal app crash was detec
 - `StatusViewModel`, `SpeciesViewModel`, `TripsViewModel`, `RecordsViewModel`, and `IdentifyViewModel` state transitions
 - Trip route stop generation and Google Maps / `geo:` URI construction
 - Native map marker filtering, color mapping, and marker hue mapping
-- ktlint Kotlin style checks in local and CI verification`r`n- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing and environment presets, records context, identify result save actions, species search/detail/hotspot handoff, species error retry and empty-result states, trip error retry, species chooser refresh/error handling, unmatched species guidance, and trip numeric input wiring
+- ktlint Kotlin style checks in local and CI verification
+- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing and environment presets, records context, identify result save actions, species search/detail/hotspot handoff, species error retry and empty-result states, trip error retry, species chooser refresh/error handling, unmatched species guidance, and trip numeric input wiring
 
 ## Next Implementation Unit
 

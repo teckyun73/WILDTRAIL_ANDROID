@@ -16,7 +16,7 @@ This document is the lightweight operating guide for keeping `main` releasable.
 Run the non-emulator verification locally for app-code changes:
 
 ```powershell
-.\gradlew.bat testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease --stacktrace
+.\gradlew.bat ktlintCheck testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease --stacktrace
 ```
 
 Run the emulator suite when an AVD is available:
@@ -67,13 +67,15 @@ app/build/outputs/bundle/release/app-release.aab
 
 4. Run the manual QA checklist in `docs/manual-qa-checklist.md`.
 5. Confirm API environment values and `MAPS_API_KEY` state are correct for the target build.
-6. Record the commit SHA, CI run URL, artifact names, and QA notes in the release notes.
+6. Review `docs/privacy-and-permissions.md` and confirm Play Data safety answers still match the build.
+7. Record the commit SHA, CI run URL, artifact names, and QA notes in the release notes.
 
 ## Current Quality Gates
 
 - JVM unit tests cover network utilities, retry/fallback behavior, ViewModel state transitions, route generation, route summaries, and map helper logic.
 - Compose UI tests cover app startup, primary navigation, status environment presets, seeded species/trips/map flows, and the common offline error panel.
 - Manual QA covers media picking, audio recording, records save/list, backend health, species/hotspots, trips, native maps, external map handoff, and permission guidance.
+- Release review includes app icon/splash resources, privacy and permission notes, and Play internal testing preparation in `docs/play-internal-testing.md`.
 
 ## Configuration Notes
 
