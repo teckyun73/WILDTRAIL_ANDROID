@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.wildtrail.app.data.dto.HotspotDto
 import com.wildtrail.app.data.dto.SpeciesDetailDto
 import com.wildtrail.app.data.dto.SpeciesSummaryDto
+import com.wildtrail.app.ui.components.OfflineErrorPanel
 import com.wildtrail.app.ui.theme.Forest
 @Composable
 fun SpeciesScreen(
@@ -51,6 +52,7 @@ fun SpeciesScreen(
     onSelectSpecies: (String) -> Unit,
     onPlanTripForSpecies: (String) -> Unit,
     onRefresh: () -> Unit,
+    onRetrySelectedSpecies: () -> Unit,
     isLoading: Boolean,
 ) {
     Column(
@@ -98,13 +100,29 @@ fun SpeciesScreen(
                 Text(if (isLoading) "갱신 중" else "새로고침")
             }
         }
-        SpeciesDetailPanel(speciesDetailState, onPlanTripForSpecies)
-        HotspotPanel(hotspotState)
+        SpeciesDetailPanel(
+            state = speciesDetailState,
+            onPlanTripForSpecies = onPlanTripForSpecies,
+            onRetry = onRetrySelectedSpecies,
+            isLoading = speciesDetailState is SpeciesDetailUiState.Loading || hotspotState is HotspotUiState.Loading,
+        )
+        HotspotPanel(
+            state = hotspotState,
+            onRetry = onRetrySelectedSpecies,
+            isLoading = speciesDetailState is SpeciesDetailUiState.Loading || hotspotState is HotspotUiState.Loading,
+        )
         AnimatedContent(targetState = speciesState, modifier = Modifier.weight(1f), label = "species-state") { current ->
             when (current) {
                 SpeciesUiState.Idle -> SpeciesIdlePanel("도감 목록을 불러오세요.")
                 SpeciesUiState.Loading -> SpeciesLoadingPanel()
-                is SpeciesUiState.Error -> SpeciesErrorPanel("도감 연결 실패", current.message)
+                is SpeciesUiState.Error -> OfflineErrorPanel(
+                    title = "도감 연결 실패",
+                    message = current.message,
+                    actionLabel = if (isLoading) "갱신 중" else "다시 불러오기",
+                    onAction = onRefresh,
+                    actionTestTag = "species-error-retry-button",
+                    isActionEnabled = !isLoading,
+                )
                 is SpeciesUiState.Ready -> SpeciesList(
                     species = filterSpecies(current.species, search),
                     selectedSpeciesId = selectedSpeciesId,
@@ -206,6 +224,8 @@ private fun SpeciesRow(
 private fun SpeciesDetailPanel(
     state: SpeciesDetailUiState,
     onPlanTripForSpecies: (String) -> Unit,
+    onRetry: () -> Unit,
+    isLoading: Boolean,
 ) {
     AnimatedContent(targetState = state, label = "species-detail-state") { current ->
         when (current) {
@@ -226,7 +246,14 @@ private fun SpeciesDetailPanel(
                     )
                 }
             }
-            is SpeciesDetailUiState.Error -> SpeciesErrorPanel("상세 정보 오류", current.message)
+            is SpeciesDetailUiState.Error -> OfflineErrorPanel(
+                title = "상세 정보 오류",
+                message = current.message,
+                actionLabel = if (isLoading) "불러오는 중" else "선택 종 다시 불러오기",
+                onAction = onRetry,
+                actionTestTag = "species-detail-error-retry-button",
+                isActionEnabled = !isLoading,
+            )
             is SpeciesDetailUiState.Ready -> SpeciesDetailContent(current.detail, onPlanTripForSpecies)
         }
     }
@@ -294,7 +321,11 @@ private fun SpeciesDetailField(label: String, value: String) {
 
 
 @Composable
-private fun HotspotPanel(state: HotspotUiState) {
+private fun HotspotPanel(
+    state: HotspotUiState,
+    onRetry: () -> Unit,
+    isLoading: Boolean,
+) {
     AnimatedContent(targetState = state, label = "hotspot-state") { current ->
         when (current) {
             HotspotUiState.Empty -> Unit
@@ -314,7 +345,14 @@ private fun HotspotPanel(state: HotspotUiState) {
                     )
                 }
             }
-            is HotspotUiState.Error -> SpeciesErrorPanel("관찰지 오류", current.message)
+            is HotspotUiState.Error -> OfflineErrorPanel(
+                title = "관찰지 오류",
+                message = current.message,
+                actionLabel = if (isLoading) "불러오는 중" else "선택 종 다시 불러오기",
+                onAction = onRetry,
+                actionTestTag = "hotspot-error-retry-button",
+                isActionEnabled = !isLoading,
+            )
             is HotspotUiState.Ready -> HotspotContent(current.hotspots)
         }
     }
@@ -433,28 +471,6 @@ private fun SpeciesLoadingPanel() {
 }
 
 @Composable
-private fun SpeciesErrorPanel(title: String, message: String) {
-    Surface(shape = RoundedCornerShape(8.dp), color = Color(0xFFFFF0EE)) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(title, fontWeight = FontWeight.Bold, color = Color(0xFFB3261E))
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF7D2E25),
-            )
-            Text(
-                text = "로컬 백엔드를 실행한 뒤 에뮬레이터에서는 10.0.2.2 또는 ADB reverse 사용 시 127.0.0.1, 실제 기기에서는 PC의 LAN IP를 사용하세요.",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFF7D2E25),
-            )
-        }
-    }
-}
-
-@Composable
 private fun SpeciesMetadataChip(text: String) {
     Surface(shape = CircleShape, color = MaterialTheme.colorScheme.surfaceVariant) {
         Text(
@@ -465,4 +481,7 @@ private fun SpeciesMetadataChip(text: String) {
         )
     }
 }
+
+
+
 

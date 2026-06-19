@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.wildtrail.app.ApiEnvironmentPreset
 import com.wildtrail.app.data.dto.HealthResponseDto
 import com.wildtrail.app.data.dto.ModelStatusDto
+import com.wildtrail.app.ui.components.OfflineErrorPanel
 import com.wildtrail.app.ui.theme.Forest
 
 @Composable
@@ -77,7 +78,14 @@ fun StatusScreen(
                 HealthUiState.Idle -> IdlePanel("서버 상태를 확인하세요.")
                 HealthUiState.Loading -> LoadingPanel()
                 is HealthUiState.Ready -> HealthPanel(current.health)
-                is HealthUiState.Error -> ErrorPanel("백엔드 연결 실패", current.message)
+                is HealthUiState.Error -> OfflineErrorPanel(
+                    title = "백엔드 연결 실패",
+                    message = current.message,
+                    actionLabel = if (isLoading) "확인 중..." else "다시 확인",
+                    onAction = onCheckHealth,
+                    actionTestTag = "status-error-retry-button",
+                    isActionEnabled = !isLoading,
+                )
             }
         }
         NextStepsPanel()
@@ -240,28 +248,6 @@ private fun LoadingPanel() {
 }
 
 @Composable
-private fun ErrorPanel(title: String, message: String) {
-    Surface(shape = RoundedCornerShape(8.dp), color = Color(0xFFFFF0EE)) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(title, fontWeight = FontWeight.Bold, color = Color(0xFFB3261E))
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF7D2E25),
-            )
-            Text(
-                text = "로컬 백엔드를 실행한 뒤 에뮬레이터에서는 10.0.2.2 또는 ADB reverse 사용 시 127.0.0.1, 실제 기기에서는 PC의 LAN IP를 사용하세요.",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFF7D2E25),
-            )
-        }
-    }
-}
-
-@Composable
 private fun HealthPanel(health: HealthResponseDto) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
@@ -386,5 +372,6 @@ private fun NextStepsPanel() {
     }
     Spacer(modifier = Modifier.height(8.dp))
 }
+
 
 

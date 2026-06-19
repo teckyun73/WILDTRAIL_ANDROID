@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wildtrail.app.data.dto.IdentificationCandidateDto
 import com.wildtrail.app.data.dto.IdentificationResultDto
+import com.wildtrail.app.ui.components.OfflineErrorPanel
 import com.wildtrail.app.ui.theme.Forest
 
 @Composable
@@ -192,7 +193,11 @@ fun IdentifyScreen(
             when (current) {
                 IdentifyUiState.Empty -> IdentifyIdlePanel("이미지나 오디오를 선택하면 식별 결과가 여기에 표시됩니다.")
                 IdentifyUiState.Loading -> IdentifyLoadingPanel()
-                is IdentifyUiState.Error -> IdentifyErrorPanel("식별 실패", current.message)
+                is IdentifyUiState.Error -> OfflineErrorPanel(
+                    title = "식별 실패",
+                    message = current.message,
+                    guidance = "API 서버와 네트워크 연결을 확인한 뒤 같은 파일을 다시 선택하거나 녹음을 다시 시작하세요.",
+                )
                 is IdentifyUiState.Ready -> IdentificationResultPanel(
                     result = current.result,
                     onCandidateSelected = onCandidateSelected,
@@ -317,21 +322,6 @@ private fun IdentifyLoadingPanel() {
     }
 }
 
-@Composable
-private fun IdentifyErrorPanel(title: String, message: String) {
-    Surface(
-        shape = RoundedCornerShape(8.dp),
-        tonalElevation = 1.dp,
-        color = Color(0xFFFFF3E0),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(title, fontWeight = FontWeight.Bold, color = Color(0xFF7A4B00))
-            Text(message, color = Color(0xFF7A4B00))
-        }
-    }
-}
-
 private fun confidenceColor(confidence: Double): Color {
     return when {
         confidence >= 0.8 -> Forest
@@ -339,6 +329,7 @@ private fun confidenceColor(confidence: Double): Color {
         else -> Color(0xFFB3261E)
     }
 }
+
 
 
 

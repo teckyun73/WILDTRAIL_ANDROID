@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import com.wildtrail.app.feature.species.SpeciesUiState
 import com.wildtrail.app.data.dto.SpeciesSummaryDto
 import com.wildtrail.app.data.dto.TripPlanResponseDto
+import com.wildtrail.app.ui.components.OfflineErrorPanel
 import com.wildtrail.app.ui.theme.Forest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -232,17 +233,14 @@ private fun TripErrorPanel(
     onRetry: () -> Unit,
     isLoading: Boolean,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        TripErrorContent("여행 계획 실패", message)
-        Button(
-            onClick = onRetry,
-            enabled = !isLoading,
-            colors = ButtonDefaults.buttonColors(containerColor = Forest),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(if (isLoading) "다시 생성 중..." else "같은 조건으로 다시 생성")
-        }
-    }
+    OfflineErrorPanel(
+        title = "여행 계획 실패",
+        message = message,
+        actionLabel = if (isLoading) "다시 생성 중..." else "같은 조건으로 다시 생성",
+        onAction = onRetry,
+        actionTestTag = "trip-error-retry-button",
+        isActionEnabled = !isLoading,
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -757,21 +755,6 @@ private fun TripLoadingPanel() {
 }
 
 @Composable
-private fun TripErrorContent(title: String, message: String) {
-    Surface(
-        shape = RoundedCornerShape(8.dp),
-        tonalElevation = 1.dp,
-        color = Color(0xFFFFF3E0),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(title, fontWeight = FontWeight.Bold, color = Color(0xFF7A4B00))
-            Text(message, color = Color(0xFF7A4B00))
-        }
-    }
-}
-
-@Composable
 private fun TripDetailField(label: String, value: String) {
     if (value.isBlank()) return
     Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
@@ -781,4 +764,5 @@ private fun TripDetailField(label: String, value: String) {
 }
 
 private fun formatKrw(value: Int): String = "%,d원".format(value)
+
 

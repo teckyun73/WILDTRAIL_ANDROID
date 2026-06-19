@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.wildtrail.app.data.dto.SightingDto
+import com.wildtrail.app.ui.components.OfflineErrorPanel
 import com.wildtrail.app.ui.theme.Forest
 @Composable
 fun RecordsScreen(
@@ -76,7 +77,14 @@ fun RecordsScreen(
             when (current) {
                 SightingUiState.Idle -> RecordsIdlePanel("관찰 기록을 불러오세요.")
                 SightingUiState.Loading -> RecordsLoadingPanel()
-                is SightingUiState.Error -> RecordsErrorPanel("기록 연결 실패", current.message)
+                is SightingUiState.Error -> OfflineErrorPanel(
+                    title = "기록 연결 실패",
+                    message = current.message,
+                    actionLabel = if (isLoading) "갱신 중" else "다시 불러오기",
+                    onAction = onRefresh,
+                    actionTestTag = "records-error-retry-button",
+                    isActionEnabled = !isLoading,
+                )
                 is SightingUiState.Ready -> SightingList(current.sightings)
             }
         }
@@ -177,28 +185,6 @@ private fun RecordsLoadingPanel() {
 }
 
 @Composable
-private fun RecordsErrorPanel(title: String, message: String) {
-    Surface(shape = RoundedCornerShape(8.dp), color = Color(0xFFFFF0EE)) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(title, fontWeight = FontWeight.Bold, color = Color(0xFFB3261E))
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF7D2E25),
-            )
-            Text(
-                text = "로컬 백엔드를 실행한 뒤 에뮬레이터에서는 10.0.2.2 또는 ADB reverse 사용 시 127.0.0.1, 실제 기기에서는 PC의 LAN IP를 사용하세요.",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color(0xFF7D2E25),
-            )
-        }
-    }
-}
-
-@Composable
 private fun RecordsMetadataChip(text: String) {
     Surface(shape = CircleShape, color = MaterialTheme.colorScheme.surfaceVariant) {
         Text(
@@ -209,4 +195,5 @@ private fun RecordsMetadataChip(text: String) {
         )
     }
 }
+
 
