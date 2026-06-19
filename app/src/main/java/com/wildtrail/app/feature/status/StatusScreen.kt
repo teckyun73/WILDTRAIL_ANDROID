@@ -24,6 +24,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,6 +37,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.wildtrail.app.ApiEnvironmentPreset
 import com.wildtrail.app.data.dto.HealthResponseDto
 import com.wildtrail.app.data.dto.ModelStatusDto
 import com.wildtrail.app.ui.theme.Forest
@@ -44,6 +46,10 @@ import com.wildtrail.app.ui.theme.Forest
 fun StatusScreen(
     baseUrl: String,
     onBaseUrlChange: (String) -> Unit,
+    apiPresets: List<ApiEnvironmentPreset>,
+    selectedEnvironmentLabel: String,
+    onPresetSelected: (String) -> Unit,
+    onResetBaseUrl: () -> Unit,
     healthState: HealthUiState,
     onCheckHealth: () -> Unit,
     isLoading: Boolean,
@@ -59,6 +65,10 @@ fun StatusScreen(
         ConnectionPanel(
             baseUrl = baseUrl,
             onBaseUrlChange = onBaseUrlChange,
+            apiPresets = apiPresets,
+            selectedEnvironmentLabel = selectedEnvironmentLabel,
+            onPresetSelected = onPresetSelected,
+            onResetBaseUrl = onResetBaseUrl,
             onCheck = onCheckHealth,
             isLoading = isLoading,
         )
@@ -129,10 +139,15 @@ private fun StatusPill(state: HealthUiState) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ConnectionPanel(
     baseUrl: String,
     onBaseUrlChange: (String) -> Unit,
+    apiPresets: List<ApiEnvironmentPreset>,
+    selectedEnvironmentLabel: String,
+    onPresetSelected: (String) -> Unit,
+    onResetBaseUrl: () -> Unit,
     onCheck: () -> Unit,
     isLoading: Boolean,
 ) {
@@ -141,13 +156,45 @@ private fun ConnectionPanel(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text("API 서버", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("API 서버", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text(
+                        "현재 환경: $selectedEnvironmentLabel",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                OutlinedButton(
+                    onClick = onResetBaseUrl,
+                    modifier = Modifier.testTag("status-api-reset-button"),
+                ) {
+                    Text("기본값")
+                }
+            }
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                apiPresets.forEach { preset ->
+                    OutlinedButton(
+                        onClick = { onPresetSelected(preset.id) },
+                        modifier = Modifier.testTag("status-api-preset-${preset.id}"),
+                    ) {
+                        Text(preset.label)
+                    }
+                }
+            }
             OutlinedTextField(
                 value = baseUrl,
                 onValueChange = onBaseUrlChange,
                 singleLine = true,
                 label = { Text("Base URL") },
-                supportingText = { Text("에뮬레이터 기본값: http://10.0.2.2:8000, ADB reverse: http://127.0.0.1:8000") },
+                supportingText = { Text("프리셋을 선택하거나 직접 입력하세요. 실기기 LAN 프리셋은 PC IP로 수정해야 합니다.") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("status-base-url"),
@@ -339,3 +386,5 @@ private fun NextStepsPanel() {
     }
     Spacer(modifier = Modifier.height(8.dp))
 }
+
+

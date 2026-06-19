@@ -53,6 +53,18 @@ For a physical Android device on the same Wi-Fi network, use the PC LAN IP inste
 http://<PC_LAN_IP>:8000
 ```
 
+The status screen also includes API environment presets for build default, emulator local backend, ADB reverse, physical-device LAN, staging, and production. Configure build defaults in `local.properties` or Gradle properties:
+
+```properties
+API_BASE_URL=http://10.0.2.2:8000
+DEBUG_API_BASE_URL=http://10.0.2.2:8000
+RELEASE_API_BASE_URL=https://api.example.com
+STAGING_API_BASE_URL=https://staging-api.example.com
+PRODUCTION_API_BASE_URL=https://api.example.com
+```
+
+`DEBUG_API_BASE_URL` is used for debug builds, `RELEASE_API_BASE_URL` is used for release builds, and the staging/production values appear as selectable presets inside the app. If staging/production are not configured, they fall back to the debug/release defaults.
+
 ## Native Map Setup
 
 The trip planner includes an in-app native map screen powered by Google Maps SDK for Android.
@@ -97,7 +109,7 @@ Do not commit `org.gradle.java.home` to the project `gradle.properties`; it brea
 
 ### 상태
 
-- API URL input
+- API URL input with environment presets and build default reset
 - `/health` check button
 - Backend service status
 - Image model mode: `MODEL` or `STUB`
@@ -180,7 +192,7 @@ No output from the final logcat filter means no recent fatal app crash was detec
 - `StatusViewModel`, `SpeciesViewModel`, `TripsViewModel`, `RecordsViewModel`, and `IdentifyViewModel` state transitions
 - Trip route stop generation and Google Maps / `geo:` URI construction
 - Native map marker filtering, color mapping, and marker hue mapping
-- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing, records context, and trip planning form editing
+- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing and environment presets, records context, and trip planning form editing
 
 ## Next Implementation Unit
 
@@ -195,4 +207,5 @@ Start with the manual QA checklist in [docs/manual-qa-checklist.md](docs/manual-
 ## Local Tooling Note
 
 The terminal build on this PC uses the Android Studio bundled JBR configured in `%USERPROFILE%\.gradle\gradle.properties`. The Android SDK and emulator are expected under `C:\Users\ATECCN\AppData\Local\Android\Sdk` on this PC.
+
 

@@ -11,10 +11,16 @@ internal fun StatusRoute(
     StatusScreen(
         baseUrl = settingsViewModel.apiBaseUrl,
         onBaseUrlChange = { settingsViewModel.updateApiBaseUrl(it) },
+        apiPresets = settingsViewModel.apiEnvironmentPresets,
+        selectedEnvironmentLabel = settingsViewModel.selectedEnvironmentLabel,
+        onPresetSelected = { settingsViewModel.selectApiEnvironment(it) },
+        onResetBaseUrl = { settingsViewModel.resetApiBaseUrl() },
         healthState = statusViewModel.healthState,
         onCheckHealth = { statusViewModel.checkHealth(settingsViewModel.apiBaseUrl, settingsViewModel::updateApiBaseUrl) },
         isLoading = statusViewModel.healthState is HealthUiState.Loading,
     )
 }
+
+
 
 

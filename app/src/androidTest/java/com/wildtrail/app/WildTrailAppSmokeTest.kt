@@ -1,6 +1,7 @@
 package com.wildtrail.app
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithTag
@@ -50,6 +51,18 @@ class WildTrailAppSmokeTest {
         apiUrlField.performTextInput("http://127.0.0.1:8000")
 
         composeRule.onNodeWithTag("status-check-button").assertIsDisplayed()
+    }
+
+    @Test
+    fun statusTabSwitchesApiEnvironmentPresets() {
+        selectTab("상태")
+
+        composeRule.onNodeWithTag("status-api-preset-adb-reverse").performClick()
+        composeRule.onNodeWithTag("status-base-url").assertTextContains("http://127.0.0.1:8000")
+        composeRule.onNodeWithText("현재 환경: ADB reverse").assertIsDisplayed()
+
+        composeRule.onNodeWithTag("status-api-reset-button").performClick()
+        composeRule.onNodeWithText("현재 환경: 빌드 기본값").assertIsDisplayed()
     }
 
     @Test

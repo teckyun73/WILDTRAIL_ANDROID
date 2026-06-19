@@ -25,6 +25,8 @@ val mapsApiKey = projectSetting("MAPS_API_KEY") ?: ""
 val defaultApiBaseUrl = projectSetting("API_BASE_URL") ?: "http://10.0.2.2:8000"
 val debugApiBaseUrl = projectSetting("DEBUG_API_BASE_URL") ?: defaultApiBaseUrl
 val releaseApiBaseUrl = projectSetting("RELEASE_API_BASE_URL") ?: defaultApiBaseUrl
+val stagingApiBaseUrl = projectSetting("STAGING_API_BASE_URL") ?: debugApiBaseUrl
+val productionApiBaseUrl = projectSetting("PRODUCTION_API_BASE_URL") ?: releaseApiBaseUrl
 val appVersionCode = projectSetting("VERSION_CODE")?.toIntOrNull() ?: 1
 val appVersionName = projectSetting("VERSION_NAME") ?: "0.1.0"
 
@@ -42,6 +44,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders["mapsApiKey"] = mapsApiKey
         buildConfigField("Boolean", "HAS_MAPS_API_KEY", mapsApiKey.isNotBlank().toString())
+        buildConfigField("String", "STAGING_API_BASE_URL", "\"$stagingApiBaseUrl\"")
+        buildConfigField("String", "PRODUCTION_API_BASE_URL", "\"$productionApiBaseUrl\"")
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -117,4 +121,5 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
+
 
