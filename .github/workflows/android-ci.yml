@@ -38,6 +38,18 @@ jobs:
       - name: Run JVM tests and assemble build artifacts
         run: ./gradlew ktlintCheck testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease --stacktrace
 
+      - name: Verify release candidate artifacts
+        shell: pwsh
+        run: ./scripts/verify-release-candidate.ps1 -VersionCode 1 -VersionName 0.1.0
+
+      - name: Upload release candidate verification report
+        uses: actions/upload-artifact@v4
+        with:
+          name: wildtrail-release-candidate-report
+          path: build/reports/release-candidate/*.json
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:

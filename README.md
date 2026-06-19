@@ -179,7 +179,7 @@ Use `./gradlew ktlintFormat` for local formatting. CI runs `ktlintCheck` before 
 
 ## Verification
 
-GitHub Actions runs this non-emulator verification on every `main` push and pull request:
+GitHub Actions runs this non-emulator verification on every `main` push and pull request, then verifies release artifacts with `scripts/verify-release-candidate.ps1` and uploads the JSON report:
 
 ```powershell
 .\gradlew.bat ktlintCheck testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease --stacktrace

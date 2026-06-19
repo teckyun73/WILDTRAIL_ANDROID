@@ -45,9 +45,10 @@ No output from the final `logcat` filter means no recent fatal app crash was det
 - `wildtrail-debug-apk`
 - `wildtrail-debug-android-test-apk`
 - `wildtrail-release-artifacts`
+- `wildtrail-release-candidate-report`
 - `wildtrail-jvm-test-report`
 
-Artifacts are retained for 14 days. Treat the release APK as unsigned verification output unless signing is explicitly configured through private local or CI secrets. Release signing setup is documented in `docs/release-signing.md`.
+Artifacts are retained for 14 days. `wildtrail-release-candidate-report` contains the JSON output from `scripts/verify-release-candidate.ps1`, including version metadata and SHA-256 checksums. Treat the release APK as unsigned verification output unless signing is explicitly configured through private local or CI secrets. Release signing setup is documented in `docs/release-signing.md`.
 
 ## Release Candidate Checklist
 
