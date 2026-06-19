@@ -25,7 +25,7 @@ class RouteModelsTest {
         val stops = tripRouteStops(plan)
 
         assertEquals(2, stops.size)
-        assertEquals(RouteStop("서울역", "origin", 37.55, 126.97), stops[0])
+        assertEquals(RouteStop("서울역", "출발", 37.55, 126.97), stops[0])
         assertEquals(RouteStop("DMZ 생태길", "경유", 38.1, 127.2), stops[1])
         assertTrue(stops[0].hasCoordinates)
         assertTrue(stops[1].hasCoordinates)
@@ -96,6 +96,31 @@ class RouteModelsTest {
         assertFalse(stops[1].hasCoordinates)
     }
 
+    @Test
+    fun routeSummary_countsCoordinateStopsAndStraightLineDistance() {
+        val stops = listOf(
+            RouteStop("서울역", "출발", 37.55, 126.97),
+            RouteStop("좌표 없는 경유지", "경유"),
+            RouteStop("DMZ 생태길", "주요 관찰지", 38.1, 127.2),
+        )
+
+        val summary = routeSummary(stops)
+
+        assertEquals(3, summary.stopCount)
+        assertEquals(2, summary.coordinateStopCount)
+        assertEquals(64.4, summary.straightLineDistanceKm ?: 0.0, 0.5)
+        assertEquals("직선거리 64.4km", formatRouteDistance(summary.straightLineDistanceKm))
+    }
+
+    @Test
+    fun routeSummary_usesUnknownDistanceWhenRouteHasFewerThanTwoCoordinateStops() {
+        val summary = routeSummary(listOf(RouteStop("DMZ 생태길", "주요 관찰지", 38.1, 127.2)))
+
+        assertEquals(1, summary.stopCount)
+        assertEquals(1, summary.coordinateStopCount)
+        assertNull(summary.straightLineDistanceKm)
+        assertEquals("좌표 거리 미정", formatRouteDistance(summary.straightLineDistanceKm))
+    }
     @Test
     fun buildRouteMapUri_encodesOriginDestinationAndWaypoints() {
         val stops = listOf(
@@ -211,5 +236,4 @@ class RouteModelsTest {
         source = "test",
     )
 }
-
 

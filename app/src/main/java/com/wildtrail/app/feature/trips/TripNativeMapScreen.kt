@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -81,6 +83,7 @@ fun TripNativeMapScreen(
     val context = LocalContext.current
     val stops = remember(plan) { tripRouteStops(plan) }
     val coordinateStops = remember(stops) { stops.filter { it.hasCoordinates } }
+    val summary = remember(stops) { routeSummary(stops) }
     var selectedStop by remember(stops) { mutableStateOf<RouteStop?>(coordinateStops.lastOrNull() ?: stops.lastOrNull()) }
     var hasLocationPermission by remember { mutableStateOf(context.hasLocationPermission()) }
     var locationRequestCount by remember { mutableStateOf(0) }
@@ -110,6 +113,7 @@ fun TripNativeMapScreen(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            RouteSummaryRow(summary)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
             Button(
@@ -203,6 +207,11 @@ fun TripNativeMapScreen(
         Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("동선 지점", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(
+                    "${summary.coordinateStopCount}/${summary.stopCount}개 지점에 좌표가 있으며 ${formatRouteDistance(summary.straightLineDistanceKm)}입니다.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
                 stops.forEachIndexed { index, stop ->
                     Row(
                         modifier = Modifier
@@ -239,6 +248,28 @@ fun TripNativeMapScreen(
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun RouteSummaryRow(summary: RouteSummary) {
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        RouteSummaryChip("지점 ${summary.stopCount}곳")
+        RouteSummaryChip("좌표 ${summary.coordinateStopCount}곳")
+        RouteSummaryChip(formatRouteDistance(summary.straightLineDistanceKm))
+    }
+}
+
+@Composable
+private fun RouteSummaryChip(text: String) {
+    Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
+        Text(
+            text,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 

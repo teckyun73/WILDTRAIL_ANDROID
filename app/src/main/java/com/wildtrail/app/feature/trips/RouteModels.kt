@@ -3,10 +3,15 @@ package com.wildtrail.app.feature.trips
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import android.net.Uri
+import android.widget.Toast
 import com.wildtrail.app.data.dto.TripPlanResponseDto
 import java.net.URLEncoder
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 data class RouteStop(
     val name: String,
@@ -17,6 +22,12 @@ data class RouteStop(
     val hasCoordinates: Boolean = latitude != null && longitude != null
 }
 
+data class RouteSummary(
+    val stopCount: Int,
+    val coordinateStopCount: Int,
+    val straightLineDistanceKm: Double?,
+)
+
 fun tripRouteStops(plan: TripPlanResponseDto): List<RouteStop> {
     if (plan.routeStops.isNotEmpty()) {
         return plan.routeStops
@@ -24,7 +35,7 @@ fun tripRouteStops(plan: TripPlanResponseDto): List<RouteStop> {
             .map {
                 RouteStop(
                     name = it.name.trim(),
-                    role = it.role.ifBlank { "경유" },
+                    role = normalizeRouteRole(it.role),
                     latitude = it.latitude,
                     longitude = it.longitude,
                 )
@@ -68,6 +79,23 @@ fun tripRouteStops(plan: TripPlanResponseDto): List<RouteStop> {
             RouteStop(name = "관찰지", role = "주요 관찰지"),
         )
     }
+}
+
+fun routeSummary(stops: List<RouteStop>): RouteSummary {
+    val coordinateStops = stops.filter { it.hasCoordinates }
+    val distanceKm = coordinateStops
+        .zipWithNext()
+        .sumOf { (from, to) -> distanceKm(from, to) }
+        .takeIf { coordinateStops.size >= 2 }
+    return RouteSummary(
+        stopCount = stops.size,
+        coordinateStopCount = coordinateStops.size,
+        straightLineDistanceKm = distanceKm,
+    )
+}
+
+fun formatRouteDistance(distanceKm: Double?): String {
+    return distanceKm?.let { "직선거리 %.1fkm".format(it) } ?: "좌표 거리 미정"
 }
 
 fun openRouteInMapApp(
@@ -132,6 +160,16 @@ internal fun buildPlaceMapUri(stop: RouteStop?): String? {
         "https://www.google.com/maps/search/?api=1&query=${urlEncode(mapQuery(stop.name))}"
     }
 }
+
+private fun normalizeRouteRole(role: String): String {
+    return when (role.trim().lowercase()) {
+        "origin", "start", "departure", "출발" -> "출발"
+        "destination", "hotspot", "target", "관찰지", "주요 관찰지" -> "주요 관찰지"
+        "waypoint", "via", "stop", "경유" -> "경유"
+        else -> role.ifBlank { "경유" }
+    }
+}
+
 private fun mapDestination(stop: RouteStop): String {
     return if (stop.hasCoordinates) {
         "${stop.latitude},${stop.longitude}"
@@ -153,6 +191,20 @@ private fun mapQuery(place: String): String {
 private fun urlEncode(value: String): String {
     return URLEncoder.encode(value, Charsets.UTF_8.name()).replace("+", "%20")
 }
+
+private fun distanceKm(from: RouteStop, to: RouteStop): Double {
+    val fromLatitude = Math.toRadians(from.latitude ?: return 0.0)
+    val fromLongitude = Math.toRadians(from.longitude ?: return 0.0)
+    val toLatitude = Math.toRadians(to.latitude ?: return 0.0)
+    val toLongitude = Math.toRadians(to.longitude ?: return 0.0)
+    val deltaLatitude = toLatitude - fromLatitude
+    val deltaLongitude = toLongitude - fromLongitude
+    val a = sin(deltaLatitude / 2).pow(2.0) +
+        cos(fromLatitude) * cos(toLatitude) * sin(deltaLongitude / 2).pow(2.0)
+    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    return 6371.0 * c
+}
+
 private fun openMapUri(context: Context, uri: String, failureMessage: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri)).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -163,8 +215,4 @@ private fun openMapUri(context: Context, uri: String, failureMessage: String) {
         Toast.makeText(context, failureMessage, Toast.LENGTH_SHORT).show()
     }
 }
-
-
-
-
 

@@ -566,6 +566,7 @@ private fun TripPlanPanel(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun RoutePreviewPanel(
     plan: TripPlanResponseDto,
@@ -573,15 +574,21 @@ private fun RoutePreviewPanel(
 ) {
     val context = LocalContext.current
     val stops = remember(plan) { tripRouteStops(plan) }
+    val summary = remember(stops) { routeSummary(stops) }
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text("지도/동선", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 Text(
                     "${plan.origin}에서 ${plan.hotspotName}까지 주요 이동 지점",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    RouteSummaryChip("지점 ${summary.stopCount}곳")
+                    RouteSummaryChip("좌표 ${summary.coordinateStopCount}곳")
+                    RouteSummaryChip(formatRouteDistance(summary.straightLineDistanceKm))
+                }
             }
             Box(
                 modifier = Modifier
@@ -669,6 +676,18 @@ private fun RoutePreviewPanel(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun RouteSummaryChip(text: String) {
+    Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
+        Text(
+            text,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
@@ -764,5 +783,4 @@ private fun TripDetailField(label: String, value: String) {
 }
 
 private fun formatKrw(value: Int): String = "%,d원".format(value)
-
 

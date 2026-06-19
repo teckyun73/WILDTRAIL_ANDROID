@@ -64,12 +64,16 @@ class WildTrailSeededBackendFlowTest {
             .performClick()
 
         waitUntilText("하루 탐방 코스")
+        composeRule.onNodeWithText("지점 2곳").assertIsDisplayed()
+        composeRule.onNodeWithText("좌표 2곳").assertIsDisplayed()
+        composeRule.onNodeWithText("직선거리", substring = true).assertIsDisplayed()
         composeRule.onNodeWithText("DMZ 생태길").assertIsDisplayed()
         composeRule.onNodeWithTag("trip-open-native-map-button")
             .performScrollTo()
             .performClick()
 
         waitUntilText("여행 지도")
+        composeRule.onNodeWithText("지점 2곳").assertIsDisplayed()
         composeRule.onNodeWithText("동선 지점").assertIsDisplayed()
     }
 
