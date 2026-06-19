@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Manual QA checklist
+    url: https://github.com/teckyun73/WILDTRAIL_ANDROID/blob/main/docs/manual-qa-checklist.md
+    about: Use this checklist before filing broad app-flow regressions.

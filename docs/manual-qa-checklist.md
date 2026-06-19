@@ -1,6 +1,6 @@
 # WildTrail Android Manual QA Checklist
 
-Use this checklist after `testDebugUnitTest` and `assembleDebug` pass. Run it on the configured Android emulator before handing off a feature build.
+Use this checklist after `testDebugUnitTest` and `assembleDebug` pass. Run it on the configured Android emulator before handing off a feature build. For merge and release candidate gates, pair this checklist with [release-operations.md](release-operations.md).
 
 ## Preflight
 
@@ -63,6 +63,12 @@ Use this checklist after `testDebugUnitTest` and `assembleDebug` pass. Run it on
 - [ ] Tap `내 위치`; grant permission and confirm the in-app guidance updates.
 - [ ] Deny location permission and confirm the denial guidance appears without crashing.
 - [ ] Tap `계획으로` and confirm returning to the trip plan.
+
+## Trips And Map Route Summary
+
+- [ ] Confirm the trip plan `지도/동선` card shows total stop count, coordinate stop count, and straight-line distance or `좌표 거리 미정`.
+- [ ] Confirm the native `여행 지도` screen shows the same route summary above or near the route stop list.
+- [ ] Confirm route roles are readable as `출발`, `경유`, or `주요 관찰지` even when the backend returns English role names.
 
 ## Regression Sweep
 

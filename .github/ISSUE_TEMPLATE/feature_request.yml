@@ -1,0 +1,50 @@
+---
+name: Feature request
+description: Propose an app, backend integration, QA, or release improvement
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Or Opportunity
+      description: What user or maintainer need does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: Describe the preferred behavior or workflow.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Identify
+        - Status/API settings
+        - Species/hotspots
+        - Records
+        - Trips/map
+        - Offline/error UX
+        - Build/CI
+        - Release operations
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What must be true for this to be done?
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+  - type: textarea
+    id: verification
+    attributes:
+      label: Suggested Verification
+      description: Unit, UI, manual QA, CI, or release checks that should cover this change.

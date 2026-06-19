@@ -158,6 +158,10 @@ app/build/outputs/bundle/release/app-release.aab
 
 The release APK is unsigned and intended for build verification only. Before Play Store or external distribution, create a private upload keystore outside the repository and wire signing through local/CI secrets.
 
+## Repository Operations
+
+Use the pull request and issue templates under `.github/` for scoped changes and bug reports. Release candidate and merge-gate guidance lives in [docs/release-operations.md](docs/release-operations.md), and hands-on emulator validation lives in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md).
+
 ## Verification
 
 GitHub Actions runs this non-emulator verification on every `main` push and pull request:
@@ -202,10 +206,9 @@ The next practical step is to keep promoting the highest-value manual flows into
 2. Species screen: search, open detail, show hotspots.
 3. Trips screen: generate a plan with a fake or seeded backend, open the native map, open route handoff.
 
-Start with the manual QA checklist in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), then promote stable flows into Compose UI tests.
+Start with the manual QA checklist in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), keep release/merge notes aligned with [docs/release-operations.md](docs/release-operations.md), then promote stable flows into Compose UI tests.
 
 ## Local Tooling Note
 
 The terminal build on this PC uses the Android Studio bundled JBR configured in `%USERPROFILE%\.gradle\gradle.properties`. The Android SDK and emulator are expected under `C:\Users\ATECCN\AppData\Local\Android\Sdk` on this PC.
-
 

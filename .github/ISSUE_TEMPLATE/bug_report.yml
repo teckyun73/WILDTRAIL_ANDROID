@@ -1,0 +1,72 @@
+---
+name: Bug report
+description: Report a reproducible app, build, backend integration, or CI problem
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+      placeholder: The app crashes when...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps To Reproduce
+      description: List the shortest reliable reproduction path.
+      placeholder: |
+        1. Open ...
+        2. Tap ...
+        3. See ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What happened instead? Include visible error text if any.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Identify
+        - Status/API settings
+        - Species/hotspots
+        - Records
+        - Trips/map
+        - Build/CI
+        - Release artifacts
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: build
+    attributes:
+      label: App Build
+      description: Commit SHA, branch, version name/code, or artifact source.
+      placeholder: main @ abc1234, debug APK from CI run ...
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Emulator/device, Android version, backend URL, Maps key state, network conditions.
+      placeholder: WildTrail_API_35, Android 15, http://10.0.2.2:8000, MAPS_API_KEY empty
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs Or Screenshots
+      description: Paste relevant `logcat`, Gradle, CI, or screenshot notes.
+      render: shell
