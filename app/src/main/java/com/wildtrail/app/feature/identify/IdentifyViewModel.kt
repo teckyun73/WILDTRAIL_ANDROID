@@ -17,6 +17,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
+private const val MAX_AUDIO_BYTES = 20L * 1024L * 1024L
+
 class IdentifyViewModel(
     private val identifyImageRequest: suspend (
         baseUrl: String,
@@ -140,9 +142,14 @@ private fun createAudioPart(
         fallbackMimeType = "audio/mpeg",
         fallbackFileName = "wildtrail-audio.mp3",
         readError = "오디오 파일을 읽을 수 없습니다.",
+        maxBytes = MAX_AUDIO_BYTES,
+        sizeError = "오디오는 20MB 이하 파일을 선택해 주세요.",
     )
 
 private fun createAudioPart(file: File): MultipartBody.Part {
+    require(file.length() <= MAX_AUDIO_BYTES) {
+        "오디오는 20MB 이하 파일을 선택해 주세요."
+    }
     val body = file.readBytes().toRequestBody("audio/mp4".toMediaTypeOrNull())
     return MultipartBody.Part.createFormData("file", file.name, body)
 }
@@ -153,11 +160,20 @@ private fun createFilePart(
     fallbackMimeType: String,
     fallbackFileName: String,
     readError: String,
+    maxBytes: Long? = null,
+    sizeError: String? = null,
 ): MultipartBody.Part {
     val resolver = context.contentResolver
+    val expectedSize = querySize(context, uri)
+    if (maxBytes != null && expectedSize != null && expectedSize > maxBytes) {
+        error(sizeError ?: readError)
+    }
     val bytes =
         resolver.openInputStream(uri)?.use { it.readBytes() }
             ?: error(readError)
+    if (maxBytes != null && bytes.size > maxBytes) {
+        error(sizeError ?: readError)
+    }
     val mimeType = resolver.getType(uri) ?: fallbackMimeType
     val fileName = queryDisplayName(context, uri) ?: fallbackFileName
     val body = bytes.toRequestBody(mimeType.toMediaTypeOrNull())
@@ -172,5 +188,16 @@ private fun queryDisplayName(
     return context.contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
         val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
         if (index >= 0 && cursor.moveToFirst()) cursor.getString(index) else null
+    }
+}
+
+private fun querySize(
+    context: Context,
+    uri: Uri,
+): Long? {
+    val projection = arrayOf(OpenableColumns.SIZE)
+    return context.contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
+        val index = cursor.getColumnIndex(OpenableColumns.SIZE)
+        if (index >= 0 && cursor.moveToFirst() && !cursor.isNull(index)) cursor.getLong(index) else null
     }
 }

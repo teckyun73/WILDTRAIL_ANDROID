@@ -53,6 +53,7 @@ fun IdentifyScreen(
     onStopRecording: () -> Unit,
     onCandidateSelected: (String) -> Unit,
     onSaveCandidate: (IdentificationCandidateDto, String) -> Unit,
+    knownSpeciesIds: Set<String>?,
     saveMessage: String?,
 ) {
     val imagePicker =
@@ -144,7 +145,7 @@ fun IdentifyScreen(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    "wav, mp3, flac, ogg, m4a 파일을 업로드할 수 있습니다.",
+                    "wav, mp3, flac, ogg, m4a 파일을 업로드할 수 있습니다. 오디오는 20MB 이하만 지원합니다.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -210,6 +211,7 @@ fun IdentifyScreen(
                         result = current.result,
                         onCandidateSelected = onCandidateSelected,
                         onSaveCandidate = onSaveCandidate,
+                        knownSpeciesIds = knownSpeciesIds,
                         saveMessage = saveMessage,
                     )
             }
@@ -222,6 +224,7 @@ private fun IdentificationResultPanel(
     result: IdentificationResultDto,
     onCandidateSelected: (String) -> Unit,
     onSaveCandidate: (IdentificationCandidateDto, String) -> Unit,
+    knownSpeciesIds: Set<String>?,
     saveMessage: String?,
 ) {
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 2.dp) {
@@ -251,8 +254,11 @@ private fun IdentificationResultPanel(
             if (result.candidates.isEmpty()) {
                 Text("후보 종이 없습니다.", color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
+                val topCandidate = result.candidates.first()
+                val canSaveTopCandidate = canSaveCandidate(topCandidate, result.mediaType, knownSpeciesIds)
                 Button(
-                    onClick = { onSaveCandidate(result.candidates.first(), result.mediaType) },
+                    onClick = { onSaveCandidate(topCandidate, result.mediaType) },
+                    enabled = canSaveTopCandidate,
                     colors = ButtonDefaults.buttonColors(containerColor = Forest),
                     modifier =
                         Modifier
@@ -260,6 +266,13 @@ private fun IdentificationResultPanel(
                             .testTag("identify-save-top-candidate-button"),
                 ) {
                     Text("상위 후보 기록 저장")
+                }
+                if (!canSaveTopCandidate) {
+                    Text(
+                        "오디오 모델 후보 ${topCandidate.speciesId}는 현재 도감 목록에 없습니다. 기록 저장 전 백엔드 라벨과 도감 종 매핑을 확인하세요.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
                 }
                 saveMessage?.let {
                     Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -343,3 +356,9 @@ private fun confidenceColor(confidence: Double): Color =
         confidence >= 0.6 -> Color(0xFF8A6200)
         else -> Color(0xFFB3261E)
     }
+
+private fun canSaveCandidate(
+    candidate: IdentificationCandidateDto,
+    mediaType: String,
+    knownSpeciesIds: Set<String>?,
+): Boolean = mediaType != "audio" || knownSpeciesIds == null || candidate.speciesId in knownSpeciesIds

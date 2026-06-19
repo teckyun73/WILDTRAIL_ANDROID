@@ -12,6 +12,7 @@ import org.junit.Assert.assertSame
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
+import java.io.RandomAccessFile
 import java.net.ConnectException
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -83,9 +84,39 @@ class IdentifyViewModelTest {
             assertNull(viewModel.recordingMessage)
         }
 
+    @Test
+    fun identifyRecordedAudio_blocksFilesLargerThanBackendLimitBeforeRequest() =
+        runTest {
+            var requestCalled = false
+            val audioFile = createLargeTempAudioFile()
+            val viewModel =
+                IdentifyViewModel(
+                    identifyAudioRequest = { _, _, _ ->
+                        requestCalled = true
+                        identificationResultFixture()
+                    },
+                )
+
+            viewModel.identifyRecordedAudio(audioFile, 1500, "http://10.0.2.2:8000") {}
+            advanceUntilIdle()
+
+            val state = viewModel.identifyState as IdentifyUiState.Error
+            assertEquals("오디오는 20MB 이하 파일을 선택해 주세요.", state.message)
+            assertEquals(false, requestCalled)
+            assertEquals(audioFile.name, viewModel.selectedAudioName)
+            assertNull(viewModel.selectedImageName)
+            assertNull(viewModel.recordingMessage)
+        }
+
     private fun createTempAudioFile(): File =
         File.createTempFile("wildtrail-recording", ".m4a").apply {
             writeBytes(byteArrayOf(0x00, 0x01, 0x02, 0x03))
+            deleteOnExit()
+        }
+
+    private fun createLargeTempAudioFile(): File =
+        File.createTempFile("wildtrail-large-recording", ".m4a").apply {
+            RandomAccessFile(this, "rw").use { it.setLength(20L * 1024L * 1024L + 1L) }
             deleteOnExit()
         }
 

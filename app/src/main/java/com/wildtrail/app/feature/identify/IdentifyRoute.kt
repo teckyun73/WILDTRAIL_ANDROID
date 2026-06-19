@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import com.wildtrail.app.AppSettingsViewModel
 import com.wildtrail.app.feature.records.RecordsViewModel
+import com.wildtrail.app.feature.species.SpeciesUiState
 import com.wildtrail.app.feature.species.SpeciesViewModel
 
 @Composable
@@ -52,6 +53,13 @@ internal fun IdentifyRoute(
             ->
             recordsViewModel.saveCandidate(candidate, mediaType, settingsViewModel.apiBaseUrl, settingsViewModel::updateApiBaseUrl)
         },
+        knownSpeciesIds = speciesViewModel.knownSpeciesIds(),
         saveMessage = recordsViewModel.saveSightingMessage,
     )
 }
+
+private fun SpeciesViewModel.knownSpeciesIds(): Set<String>? =
+    (speciesState as? SpeciesUiState.Ready)
+        ?.species
+        ?.map { it.id }
+        ?.toSet()

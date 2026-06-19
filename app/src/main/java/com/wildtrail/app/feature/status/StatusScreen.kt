@@ -284,8 +284,8 @@ private fun HealthPanel(health: HealthResponseDto) {
                     )
                 }
                 HorizontalDivider()
-                ModelRow("이미지 모델", health.imageModel)
-                ModelRow("오디오 모델", health.audioModel)
+                ModelRow("이미지 모델", health.imageModel, health.speciesJsonCount, "이미지")
+                ModelRow("오디오 모델", health.audioModel, health.speciesJsonCount, "오디오")
                 LlmRow(health)
             }
         }
@@ -295,17 +295,20 @@ private fun HealthPanel(health: HealthResponseDto) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ModelRow(
     label: String,
     model: ModelStatusDto,
+    speciesJsonCount: Int,
+    mediaLabel: String,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
     ) {
-        Column(modifier = Modifier.weight(1f)) {
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(label, fontWeight = FontWeight.SemiBold)
             Text(
                 text = model.modelVersion ?: model.modelPath.ifBlank { "checkpoint 정보 없음" },
@@ -314,6 +317,16 @@ private fun ModelRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                modelMetadataChips(model).forEach { chip -> MetadataChip(chip) }
+            }
+            if (mediaLabel == "오디오" && model.modelLoaded && model.modelClasses > 0 && model.modelClasses != speciesJsonCount) {
+                Text(
+                    "오디오 모델은 별도 학습 라벨 ${model.modelClasses}개 기준입니다. 식별 후보 저장 전 도감 종과 매칭되는지 확인하세요.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            }
         }
         Text(
             text = if (model.modelLoaded) "MODEL" else "STUB",
@@ -322,6 +335,18 @@ private fun ModelRow(
         )
     }
 }
+
+private fun modelMetadataChips(model: ModelStatusDto): List<String> =
+    buildList {
+        if (model.modelClasses > 0) add("classes ${model.modelClasses}")
+        model.modelValAcc?.let { add("val ${formatPercent(it)}") }
+        model.backbone?.takeIf { it.isNotBlank() }?.let(::add)
+        model.trainedAt?.takeIf { it.isNotBlank() }?.let { add("trained ${it.substringBefore('T')}") }
+        model.preprocessVersion?.takeIf { it.isNotBlank() }?.let { add(it) }
+        model.datasetFingerprint?.takeIf { it.isNotBlank() }?.let { add("data ${it.take(8)}") }
+    }
+
+private fun formatPercent(value: Double): String = "${(value * 100).toInt()}%"
 
 @Composable
 private fun LlmRow(health: HealthResponseDto) {

@@ -9,9 +9,8 @@ on:
       - main
 
 env:
-  VERSION_CODE: '2'
-  VERSION_NAME: '0.1.1'
-
+  VERSION_CODE: '3'
+  VERSION_NAME: '0.1.2'
 concurrency:
   group: android-ci-${{ github.ref }}
   cancel-in-progress: true
