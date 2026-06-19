@@ -7,9 +7,5 @@ import com.wildtrail.app.data.network.WildTrailApi
 class TripRepository(
     private val api: WildTrailApi,
 ) {
-    suspend fun planTrip(payload: TripPlanRequestDto): TripPlanResponseDto {
-        return api.planTrip(payload)
-    }
+    suspend fun planTrip(payload: TripPlanRequestDto): TripPlanResponseDto = api.planTrip(payload)
 }
-
-

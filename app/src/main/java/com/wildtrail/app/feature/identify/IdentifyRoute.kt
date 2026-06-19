@@ -24,17 +24,34 @@ internal fun IdentifyRoute(
         selectedAudioName = identifyViewModel.selectedAudioName,
         isRecording = isRecording,
         recordingMessage = identifyViewModel.recordingMessage,
-        onImageSelected = { identifyViewModel.identifyImage(context, it, settingsViewModel.apiBaseUrl, settingsViewModel::updateApiBaseUrl) },
-        onAudioSelected = { identifyViewModel.identifyAudio(context, it, settingsViewModel.apiBaseUrl, settingsViewModel::updateApiBaseUrl) },
+        onImageSelected = {
+            identifyViewModel.identifyImage(
+                context,
+                it,
+                settingsViewModel.apiBaseUrl,
+                settingsViewModel::updateApiBaseUrl,
+            )
+        },
+        onAudioSelected = {
+            identifyViewModel.identifyAudio(
+                context,
+                it,
+                settingsViewModel.apiBaseUrl,
+                settingsViewModel::updateApiBaseUrl,
+            )
+        },
         onStartRecording = onStartRecording,
         onStopRecording = onStopRecording,
         onCandidateSelected = {
             onOpenSpeciesTab()
             speciesViewModel.openCandidate(it, settingsViewModel.apiBaseUrl, settingsViewModel::updateApiBaseUrl)
         },
-        onSaveCandidate = { candidate, mediaType -> recordsViewModel.saveCandidate(candidate, mediaType, settingsViewModel.apiBaseUrl, settingsViewModel::updateApiBaseUrl) },
+        onSaveCandidate = {
+            candidate,
+            mediaType,
+            ->
+            recordsViewModel.saveCandidate(candidate, mediaType, settingsViewModel.apiBaseUrl, settingsViewModel::updateApiBaseUrl)
+        },
         saveMessage = recordsViewModel.saveSightingMessage,
     )
 }
-
-

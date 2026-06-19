@@ -19,37 +19,40 @@ internal fun WildTrailTabContent(
     onTabSelected: (AppTab) -> Unit,
 ) {
     when (selectedTab) {
-        AppTab.Identify -> IdentifyRoute(
-            context = context,
-            settingsViewModel = viewModels.settings,
-            identifyViewModel = viewModels.identify,
-            recordsViewModel = viewModels.records,
-            speciesViewModel = viewModels.species,
-            isRecording = isRecording,
-            onStartRecording = onStartRecording,
-            onStopRecording = onStopRecording,
-            onOpenSpeciesTab = { onTabSelected(AppTab.Species) },
-        )
-        AppTab.Status -> StatusRoute(
-            settingsViewModel = viewModels.settings,
-            statusViewModel = viewModels.status,
-        )
-        AppTab.Species -> SpeciesRoute(
-            settingsViewModel = viewModels.settings,
-            speciesViewModel = viewModels.species,
-            tripsViewModel = viewModels.trips,
-            onOpenTripsTab = { onTabSelected(AppTab.Trips) },
-        )
-        AppTab.Records -> RecordsRoute(
-            settingsViewModel = viewModels.settings,
-            recordsViewModel = viewModels.records,
-        )
-        AppTab.Trips -> TripsRoute(
-            settingsViewModel = viewModels.settings,
-            speciesViewModel = viewModels.species,
-            tripsViewModel = viewModels.trips,
-        )
+        AppTab.Identify ->
+            IdentifyRoute(
+                context = context,
+                settingsViewModel = viewModels.settings,
+                identifyViewModel = viewModels.identify,
+                recordsViewModel = viewModels.records,
+                speciesViewModel = viewModels.species,
+                isRecording = isRecording,
+                onStartRecording = onStartRecording,
+                onStopRecording = onStopRecording,
+                onOpenSpeciesTab = { onTabSelected(AppTab.Species) },
+            )
+        AppTab.Status ->
+            StatusRoute(
+                settingsViewModel = viewModels.settings,
+                statusViewModel = viewModels.status,
+            )
+        AppTab.Species ->
+            SpeciesRoute(
+                settingsViewModel = viewModels.settings,
+                speciesViewModel = viewModels.species,
+                tripsViewModel = viewModels.trips,
+                onOpenTripsTab = { onTabSelected(AppTab.Trips) },
+            )
+        AppTab.Records ->
+            RecordsRoute(
+                settingsViewModel = viewModels.settings,
+                recordsViewModel = viewModels.records,
+            )
+        AppTab.Trips ->
+            TripsRoute(
+                settingsViewModel = viewModels.settings,
+                speciesViewModel = viewModels.species,
+                tripsViewModel = viewModels.trips,
+            )
     }
 }
-
-

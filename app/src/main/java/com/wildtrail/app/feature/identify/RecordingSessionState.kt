@@ -29,12 +29,13 @@ class RecordingSessionState internal constructor(
         when (val result = recorder.stop()) {
             RecordingStopResult.Missing -> identifyViewModel.setRecordingFileMissing()
             RecordingStopResult.TooShort -> identifyViewModel.setRecordingTooShort()
-            is RecordingStopResult.Ready -> identifyViewModel.identifyRecordedAudio(
-                file = result.file,
-                durationMillis = result.durationMillis,
-                baseUrl = baseUrlProvider(),
-                onBaseUrlFallback = onBaseUrlFallbackProvider(),
-            )
+            is RecordingStopResult.Ready ->
+                identifyViewModel.identifyRecordedAudio(
+                    file = result.file,
+                    durationMillis = result.durationMillis,
+                    baseUrl = baseUrlProvider(),
+                    onBaseUrlFallback = onBaseUrlFallbackProvider(),
+                )
         }
     }
 
@@ -55,14 +56,15 @@ fun rememberRecordingSessionState(
     val currentOnBaseUrlFallback by rememberUpdatedState(onBaseUrlFallback)
     val appContext = context.applicationContext
     val recorder = remember(appContext) { AudioRecorderController(appContext) }
-    val state = remember(recorder, identifyViewModel) {
-        RecordingSessionState(
-            recorder = recorder,
-            identifyViewModel = identifyViewModel,
-            baseUrlProvider = { currentBaseUrl },
-            onBaseUrlFallbackProvider = { currentOnBaseUrlFallback },
-        )
-    }
+    val state =
+        remember(recorder, identifyViewModel) {
+            RecordingSessionState(
+                recorder = recorder,
+                identifyViewModel = identifyViewModel,
+                baseUrlProvider = { currentBaseUrl },
+                onBaseUrlFallbackProvider = { currentOnBaseUrlFallback },
+            )
+        }
 
     DisposableEffect(state) {
         onDispose { state.release() }
@@ -70,7 +72,3 @@ fun rememberRecordingSessionState(
 
     return state
 }
-
-
-
-

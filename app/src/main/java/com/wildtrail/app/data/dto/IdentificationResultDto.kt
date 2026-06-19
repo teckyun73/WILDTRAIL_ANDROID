@@ -18,5 +18,3 @@ data class IdentificationCandidateDto(
     @SerialName("scientific_name") val scientificName: String,
     val confidence: Double,
 )
-
-

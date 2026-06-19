@@ -14,9 +14,10 @@ class TripNativeMapScreenTest {
         val waypoint = RouteStop("두루미 관찰대", "경유", 38.2, 127.1)
         val destination = RouteStop("DMZ 생태길", "주요 관찰지", 38.1, 127.2)
 
-        val markerData = routeStopMarkerData(
-            listOf(origin, waypointWithoutCoordinates, waypoint, destination),
-        )
+        val markerData =
+            routeStopMarkerData(
+                listOf(origin, waypointWithoutCoordinates, waypoint, destination),
+            )
 
         assertEquals(
             listOf(

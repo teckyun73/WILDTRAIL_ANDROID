@@ -1,10 +1,8 @@
 package com.wildtrail.app.feature.species
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -15,10 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,8 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,6 +35,7 @@ import com.wildtrail.app.data.dto.SpeciesDetailDto
 import com.wildtrail.app.data.dto.SpeciesSummaryDto
 import com.wildtrail.app.ui.components.OfflineErrorPanel
 import com.wildtrail.app.ui.theme.Forest
+
 @Composable
 fun SpeciesScreen(
     speciesState: SpeciesUiState,
@@ -56,9 +51,10 @@ fun SpeciesScreen(
     isLoading: Boolean,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -78,21 +74,23 @@ fun SpeciesScreen(
             onValueChange = onSearchChange,
             singleLine = true,
             label = { Text("종 이름 검색") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag("species-search-field"),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .testTag("species-search-field"),
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            val countText = when (speciesState) {
-                is SpeciesUiState.Ready -> "${filterSpecies(speciesState.species, search).size}종 표시"
-                SpeciesUiState.Loading -> "불러오는 중"
-                SpeciesUiState.Idle -> "대기"
-                is SpeciesUiState.Error -> "오류"
-            }
+            val countText =
+                when (speciesState) {
+                    is SpeciesUiState.Ready -> "${filterSpecies(speciesState.species, search).size}종 표시"
+                    SpeciesUiState.Loading -> "불러오는 중"
+                    SpeciesUiState.Idle -> "대기"
+                    is SpeciesUiState.Error -> "오류"
+                }
             Text(countText, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Button(
                 onClick = onRefresh,
@@ -117,25 +115,30 @@ fun SpeciesScreen(
             when (current) {
                 SpeciesUiState.Idle -> SpeciesIdlePanel("도감 목록을 불러오세요.")
                 SpeciesUiState.Loading -> SpeciesLoadingPanel()
-                is SpeciesUiState.Error -> OfflineErrorPanel(
-                    title = "도감 연결 실패",
-                    message = current.message,
-                    actionLabel = if (isLoading) "갱신 중" else "다시 불러오기",
-                    onAction = onRefresh,
-                    actionTestTag = "species-error-retry-button",
-                    isActionEnabled = !isLoading,
-                )
-                is SpeciesUiState.Ready -> SpeciesList(
-                    species = filterSpecies(current.species, search),
-                    selectedSpeciesId = selectedSpeciesId,
-                    onSelectSpecies = onSelectSpecies,
-                )
+                is SpeciesUiState.Error ->
+                    OfflineErrorPanel(
+                        title = "도감 연결 실패",
+                        message = current.message,
+                        actionLabel = if (isLoading) "갱신 중" else "다시 불러오기",
+                        onAction = onRefresh,
+                        actionTestTag = "species-error-retry-button",
+                        isActionEnabled = !isLoading,
+                    )
+                is SpeciesUiState.Ready ->
+                    SpeciesList(
+                        species = filterSpecies(current.species, search),
+                        selectedSpeciesId = selectedSpeciesId,
+                        onSelectSpecies = onSelectSpecies,
+                    )
             }
         }
     }
 }
 
-private fun filterSpecies(species: List<SpeciesSummaryDto>, search: String): List<SpeciesSummaryDto> {
+private fun filterSpecies(
+    species: List<SpeciesSummaryDto>,
+    search: String,
+): List<SpeciesSummaryDto> {
     val query = search.trim().lowercase()
     if (query.isEmpty()) return species
     return species.filter { item ->
@@ -177,10 +180,11 @@ private fun SpeciesRow(
     onClick: () -> Unit,
 ) {
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag("species-row-${species.id}")
-            .clickable(onClick = onClick),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .testTag("species-row-${species.id}")
+                .clickable(onClick = onClick),
         shape = RoundedCornerShape(8.dp),
         color = if (selected) Forest.copy(alpha = 0.10f) else MaterialTheme.colorScheme.surface,
         tonalElevation = if (selected) 2.dp else 1.dp,
@@ -232,30 +236,33 @@ private fun SpeciesDetailPanel(
     AnimatedContent(targetState = state, label = "species-detail-state") { current ->
         when (current) {
             SpeciesDetailUiState.Empty -> Unit
-            SpeciesDetailUiState.Loading -> Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.size(22.dp), color = Forest)
-                    Text(
-                        "상세 정보를 불러오는 중",
-                        modifier = Modifier.padding(start = 10.dp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+            SpeciesDetailUiState.Loading ->
+                Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
+                    Row(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(22.dp), color = Forest)
+                        Text(
+                            "상세 정보를 불러오는 중",
+                            modifier = Modifier.padding(start = 10.dp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
-            }
-            is SpeciesDetailUiState.Error -> OfflineErrorPanel(
-                title = "상세 정보 오류",
-                message = current.message,
-                actionLabel = if (isLoading) "불러오는 중" else "선택 종 다시 불러오기",
-                onAction = onRetry,
-                actionTestTag = "species-detail-error-retry-button",
-                isActionEnabled = !isLoading,
-            )
+            is SpeciesDetailUiState.Error ->
+                OfflineErrorPanel(
+                    title = "상세 정보 오류",
+                    message = current.message,
+                    actionLabel = if (isLoading) "불러오는 중" else "선택 종 다시 불러오기",
+                    onAction = onRetry,
+                    actionTestTag = "species-detail-error-retry-button",
+                    isActionEnabled = !isLoading,
+                )
             is SpeciesDetailUiState.Ready -> SpeciesDetailContent(current.detail, onPlanTripForSpecies)
         }
     }
@@ -298,9 +305,10 @@ private fun SpeciesDetailContent(
             Button(
                 onClick = { onPlanTripForSpecies(detail.id) },
                 colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("species-plan-trip-button"),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .testTag("species-plan-trip-button"),
             ) {
                 Text("이 종으로 여행 계획")
             }
@@ -315,14 +323,16 @@ private fun SpeciesDetailContent(
 }
 
 @Composable
-private fun SpeciesDetailField(label: String, value: String) {
+private fun SpeciesDetailField(
+    label: String,
+    value: String,
+) {
     if (value.isBlank()) return
     Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
         Text(label, style = MaterialTheme.typography.labelLarge, color = Forest, fontWeight = FontWeight.SemiBold)
         Text(value, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
-
 
 @Composable
 private fun HotspotPanel(
@@ -333,30 +343,33 @@ private fun HotspotPanel(
     AnimatedContent(targetState = state, label = "hotspot-state") { current ->
         when (current) {
             HotspotUiState.Empty -> Unit
-            HotspotUiState.Loading -> Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.size(22.dp), color = Forest)
-                    Text(
-                        "관찰지를 불러오는 중",
-                        modifier = Modifier.padding(start = 10.dp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+            HotspotUiState.Loading ->
+                Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
+                    Row(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.size(22.dp), color = Forest)
+                        Text(
+                            "관찰지를 불러오는 중",
+                            modifier = Modifier.padding(start = 10.dp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
-            }
-            is HotspotUiState.Error -> OfflineErrorPanel(
-                title = "관찰지 오류",
-                message = current.message,
-                actionLabel = if (isLoading) "불러오는 중" else "선택 종 다시 불러오기",
-                onAction = onRetry,
-                actionTestTag = "hotspot-error-retry-button",
-                isActionEnabled = !isLoading,
-            )
+            is HotspotUiState.Error ->
+                OfflineErrorPanel(
+                    title = "관찰지 오류",
+                    message = current.message,
+                    actionLabel = if (isLoading) "불러오는 중" else "선택 종 다시 불러오기",
+                    onAction = onRetry,
+                    actionTestTag = "hotspot-error-retry-button",
+                    isActionEnabled = !isLoading,
+                )
             is HotspotUiState.Ready -> HotspotContent(current.hotspots)
         }
     }
@@ -368,9 +381,10 @@ private fun HotspotContent(hotspots: List<HotspotDto>) {
         Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
             Text(
                 "이 종에 연결된 관찰지가 아직 없습니다.",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
@@ -448,14 +462,16 @@ private fun HotspotRow(hotspot: HotspotDto) {
         }
     }
 }
+
 @Composable
 private fun SpeciesIdlePanel(message: String) {
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
         Text(
             message,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
@@ -464,9 +480,10 @@ private fun SpeciesIdlePanel(message: String) {
 @Composable
 private fun SpeciesLoadingPanel() {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 20.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 20.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -485,4 +502,3 @@ private fun SpeciesMetadataChip(text: String) {
         )
     }
 }
-

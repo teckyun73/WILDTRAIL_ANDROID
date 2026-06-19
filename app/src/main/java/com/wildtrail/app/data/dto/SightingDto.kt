@@ -27,5 +27,3 @@ data class SightingCreateDto(
     @SerialName("media_type") val mediaType: String = "image",
     val note: String = "",
 )
-
-

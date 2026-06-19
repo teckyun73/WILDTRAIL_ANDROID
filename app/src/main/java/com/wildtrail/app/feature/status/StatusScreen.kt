@@ -56,10 +56,11 @@ fun StatusScreen(
     isLoading: Boolean,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
         Header(healthState)
@@ -78,14 +79,15 @@ fun StatusScreen(
                 HealthUiState.Idle -> IdlePanel("서버 상태를 확인하세요.")
                 HealthUiState.Loading -> LoadingPanel()
                 is HealthUiState.Ready -> HealthPanel(current.health)
-                is HealthUiState.Error -> OfflineErrorPanel(
-                    title = "백엔드 연결 실패",
-                    message = current.message,
-                    actionLabel = if (isLoading) "확인 중..." else "다시 확인",
-                    onAction = onCheckHealth,
-                    actionTestTag = "status-error-retry-button",
-                    isActionEnabled = !isLoading,
-                )
+                is HealthUiState.Error ->
+                    OfflineErrorPanel(
+                        title = "백엔드 연결 실패",
+                        message = current.message,
+                        actionLabel = if (isLoading) "확인 중..." else "다시 확인",
+                        onAction = onCheckHealth,
+                        actionTestTag = "status-error-retry-button",
+                        isActionEnabled = !isLoading,
+                    )
             }
         }
         NextStepsPanel()
@@ -123,25 +125,28 @@ private fun Header(state: HealthUiState) {
 
 @Composable
 private fun StatusPill(state: HealthUiState) {
-    val (label, color) = when (state) {
-        HealthUiState.Idle -> "대기" to MaterialTheme.colorScheme.onSurfaceVariant
-        HealthUiState.Loading -> "확인 중" to MaterialTheme.colorScheme.tertiary
-        is HealthUiState.Ready -> if (state.health.status == "ok") "정상" to Forest else "점검 필요" to MaterialTheme.colorScheme.tertiary
-        is HealthUiState.Error -> "연결 실패" to Color(0xFFB3261E)
-    }
+    val (label, color) =
+        when (state) {
+            HealthUiState.Idle -> "대기" to MaterialTheme.colorScheme.onSurfaceVariant
+            HealthUiState.Loading -> "확인 중" to MaterialTheme.colorScheme.tertiary
+            is HealthUiState.Ready -> if (state.health.status == "ok") "정상" to Forest else "점검 필요" to MaterialTheme.colorScheme.tertiary
+            is HealthUiState.Error -> "연결 실패" to Color(0xFFB3261E)
+        }
     Row(
-        modifier = Modifier
-            .clip(CircleShape)
-            .background(color.copy(alpha = 0.12f))
-            .padding(horizontal = 12.dp, vertical = 7.dp),
+        modifier =
+            Modifier
+                .clip(CircleShape)
+                .background(color.copy(alpha = 0.12f))
+                .padding(horizontal = 12.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Box(
-            modifier = Modifier
-                .size(8.dp)
-                .clip(CircleShape)
-                .background(color),
+            modifier =
+                Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(color),
         )
         Text(label, color = color, style = MaterialTheme.typography.labelLarge)
     }
@@ -203,17 +208,19 @@ private fun ConnectionPanel(
                 singleLine = true,
                 label = { Text("Base URL") },
                 supportingText = { Text("프리셋을 선택하거나 직접 입력하세요. 실기기 LAN 프리셋은 PC IP로 수정해야 합니다.") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("status-base-url"),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .testTag("status-base-url"),
             )
             Button(
                 onClick = onCheck,
                 enabled = !isLoading,
                 colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("status-check-button"),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .testTag("status-check-button"),
             ) {
                 Text(if (isLoading) "확인 중..." else "상태 확인")
             }
@@ -226,9 +233,10 @@ private fun IdlePanel(message: String) {
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
         Text(
             message,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
@@ -237,9 +245,10 @@ private fun IdlePanel(message: String) {
 @Composable
 private fun LoadingPanel() {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 20.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 20.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -287,7 +296,10 @@ private fun HealthPanel(health: HealthResponseDto) {
 }
 
 @Composable
-private fun ModelRow(label: String, model: ModelStatusDto) {
+private fun ModelRow(
+    label: String,
+    model: ModelStatusDto,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -372,6 +384,3 @@ private fun NextStepsPanel() {
     }
     Spacer(modifier = Modifier.height(8.dp))
 }
-
-
-

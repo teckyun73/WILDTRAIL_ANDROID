@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.wildtrail.app.data.dto.SightingDto
 import com.wildtrail.app.ui.components.OfflineErrorPanel
 import com.wildtrail.app.ui.theme.Forest
+
 @Composable
 fun RecordsScreen(
     sightingState: SightingUiState,
@@ -36,9 +37,10 @@ fun RecordsScreen(
     isLoading: Boolean,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -58,12 +60,13 @@ fun RecordsScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            val countText = when (sightingState) {
-                is SightingUiState.Ready -> "${sightingState.sightings.size}건"
-                SightingUiState.Loading -> "불러오는 중"
-                SightingUiState.Idle -> "대기"
-                is SightingUiState.Error -> "오류"
-            }
+            val countText =
+                when (sightingState) {
+                    is SightingUiState.Ready -> "${sightingState.sightings.size}건"
+                    SightingUiState.Loading -> "불러오는 중"
+                    SightingUiState.Idle -> "대기"
+                    is SightingUiState.Error -> "오류"
+                }
             Text(countText, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Button(
                 onClick = onRefresh,
@@ -77,14 +80,15 @@ fun RecordsScreen(
             when (current) {
                 SightingUiState.Idle -> RecordsIdlePanel("관찰 기록을 불러오세요.")
                 SightingUiState.Loading -> RecordsLoadingPanel()
-                is SightingUiState.Error -> OfflineErrorPanel(
-                    title = "기록 연결 실패",
-                    message = current.message,
-                    actionLabel = if (isLoading) "갱신 중" else "다시 불러오기",
-                    onAction = onRefresh,
-                    actionTestTag = "records-error-retry-button",
-                    isActionEnabled = !isLoading,
-                )
+                is SightingUiState.Error ->
+                    OfflineErrorPanel(
+                        title = "기록 연결 실패",
+                        message = current.message,
+                        actionLabel = if (isLoading) "갱신 중" else "다시 불러오기",
+                        onAction = onRefresh,
+                        actionTestTag = "records-error-retry-button",
+                        isActionEnabled = !isLoading,
+                    )
                 is SightingUiState.Ready -> SightingList(current.sightings)
             }
         }
@@ -150,22 +154,23 @@ private fun SightingRow(sighting: SightingDto) {
         }
     }
 }
-private fun confidenceColor(confidence: Double): Color {
-    return when {
+
+private fun confidenceColor(confidence: Double): Color =
+    when {
         confidence >= 0.8 -> Forest
         confidence >= 0.6 -> Color(0xFF8A6200)
         else -> Color(0xFFB3261E)
     }
-}
 
 @Composable
 private fun RecordsIdlePanel(message: String) {
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
         Text(
             message,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
@@ -174,9 +179,10 @@ private fun RecordsIdlePanel(message: String) {
 @Composable
 private fun RecordsLoadingPanel() {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 20.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 20.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -195,5 +201,3 @@ private fun RecordsMetadataChip(text: String) {
         )
     }
 }
-
-

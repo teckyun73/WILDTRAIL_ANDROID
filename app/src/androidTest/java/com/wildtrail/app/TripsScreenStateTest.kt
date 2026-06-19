@@ -116,7 +116,8 @@ class TripsScreenStateTest {
             assertEquals(1, refreshCount)
         }
     }
-@Test
+
+    @Test
     fun tripErrorShowsRetryAction() {
         var retryCount by mutableStateOf(0)
 
@@ -156,7 +157,8 @@ class TripsScreenStateTest {
 
         assertTextExists("여행 계획 실패")
         assertTextExists("여행 계획을 생성할 수 없습니다.")
-        composeRule.onNodeWithTag("trip-error-retry-button")
+        composeRule
+            .onNodeWithTag("trip-error-retry-button")
             .performScrollTo()
             .performClick()
 
@@ -257,24 +259,28 @@ class TripsScreenStateTest {
         composeRule.onNodeWithTag("trip-budget").assertTextContains("150000")
     }
 
-
     private fun assertTextExists(text: String) {
         val nodes = composeRule.onAllNodes(hasText(text)).fetchSemanticsNodes()
         check(nodes.isNotEmpty()) { "Expected text node '$text' to exist." }
     }
-    private fun replaceText(tag: String, value: String) {
+
+    private fun replaceText(
+        tag: String,
+        value: String,
+    ) {
         val field = composeRule.onNodeWithTag(tag)
         field.performScrollTo()
         field.performTextClearance()
         field.performTextInput(value)
     }
 
-    private fun speciesFixture() = SpeciesSummaryDto(
-        id = "lynx",
-        commonName = "삵",
-        scientificName = "Prionailurus bengalensis",
-        category = "mammal",
-        protectionGrade = "II",
-        bestMonths = "4-10",
-    )
+    private fun speciesFixture() =
+        SpeciesSummaryDto(
+            id = "lynx",
+            commonName = "삵",
+            scientificName = "Prionailurus bengalensis",
+            category = "mammal",
+            protectionGrade = "II",
+            bestMonths = "4-10",
+        )
 }

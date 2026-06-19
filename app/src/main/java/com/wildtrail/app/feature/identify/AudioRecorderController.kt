@@ -8,7 +8,9 @@ import java.io.File
 
 sealed interface RecordingStopResult {
     data object Missing : RecordingStopResult
+
     data object TooShort : RecordingStopResult
+
     data class Ready(
         val file: File,
         val durationMillis: Long,
@@ -27,16 +29,17 @@ class AudioRecorderController(
     fun start() {
         release()
         val outputFile = File(cacheDir, "wildtrail-recording-${System.currentTimeMillis()}.m4a")
-        val newRecorder = createMediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-            setAudioSamplingRate(44_100)
-            setAudioEncodingBitRate(128_000)
-            setOutputFile(outputFile.absolutePath)
-            prepare()
-            start()
-        }
+        val newRecorder =
+            createMediaRecorder().apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+                setAudioSamplingRate(44_100)
+                setAudioEncodingBitRate(128_000)
+                setOutputFile(outputFile.absolutePath)
+                prepare()
+                start()
+            }
         recorder = newRecorder
         recordingFile = outputFile
         recordingStartedAt = SystemClock.elapsedRealtime()
@@ -72,18 +75,15 @@ class AudioRecorderController(
         recordingStartedAt = null
     }
 
-    private fun createMediaRecorder(): MediaRecorder {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    private fun createMediaRecorder(): MediaRecorder =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             MediaRecorder(appContext)
         } else {
             createLegacyMediaRecorder()
         }
-    }
 
     @Suppress("DEPRECATION")
-    private fun createLegacyMediaRecorder(): MediaRecorder {
-        return MediaRecorder()
-    }
+    private fun createLegacyMediaRecorder(): MediaRecorder = MediaRecorder()
 
     private companion object {
         const val MIN_RECORDING_MILLIS = 1_000L

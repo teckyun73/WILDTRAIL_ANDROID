@@ -4,13 +4,13 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performTextClearance
-import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTextClearance
+import androidx.compose.ui.test.performTextInput
 import org.junit.Rule
 import org.junit.Test
 
@@ -85,12 +85,16 @@ class WildTrailAppSmokeTest {
         replaceText("trip-month", "10")
         replaceText("trip-budget", "300000")
 
-        composeRule.onNodeWithTag("trip-plan-button")
+        composeRule
+            .onNodeWithTag("trip-plan-button")
             .performScrollTo()
             .assertIsDisplayed()
     }
 
-    private fun replaceText(tag: String, value: String) {
+    private fun replaceText(
+        tag: String,
+        value: String,
+    ) {
         val field = composeRule.onNodeWithTag(tag)
         field.performScrollTo()
         field.performTextClearance()
@@ -101,4 +105,3 @@ class WildTrailAppSmokeTest {
         composeRule.onNode(hasText(label) and hasClickAction()).performClick()
     }
 }
-

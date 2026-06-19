@@ -1,9 +1,8 @@
 package com.wildtrail.app.feature.status
 
-import com.wildtrail.app.test.MainDispatcherRule
-
 import com.wildtrail.app.data.dto.HealthResponseDto
 import com.wildtrail.app.data.dto.ModelStatusDto
+import com.wildtrail.app.test.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -19,36 +18,39 @@ class StatusViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     @Test
-    fun checkHealth_setsReadyStateWhenRequestSucceeds() = runTest {
-        val expected = healthFixture()
-        var receivedBaseUrl: String? = null
-        var fallbackUrl: String? = null
-        val viewModel = StatusViewModel { baseUrl, onBaseUrlFallback ->
-            receivedBaseUrl = baseUrl
-            onBaseUrlFallback("http://127.0.0.1:8000")
+    fun checkHealth_setsReadyStateWhenRequestSucceeds() =
+        runTest {
+            val expected = healthFixture()
+            var receivedBaseUrl: String? = null
+            var fallbackUrl: String? = null
+            val viewModel =
+                StatusViewModel { baseUrl, onBaseUrlFallback ->
+                    receivedBaseUrl = baseUrl
+                    onBaseUrlFallback("http://127.0.0.1:8000")
 
-            expected
+                    expected
+                }
+
+            viewModel.checkHealth("http://10.0.2.2:8000") { fallbackUrl = it }
+            advanceUntilIdle()
+
+            val state = viewModel.healthState as HealthUiState.Ready
+            assertSame(expected, state.health)
+            assertEquals("http://10.0.2.2:8000", receivedBaseUrl)
+            assertEquals("http://127.0.0.1:8000", fallbackUrl)
         }
 
-        viewModel.checkHealth("http://10.0.2.2:8000") { fallbackUrl = it }
-        advanceUntilIdle()
-
-        val state = viewModel.healthState as HealthUiState.Ready
-        assertSame(expected, state.health)
-        assertEquals("http://10.0.2.2:8000", receivedBaseUrl)
-        assertEquals("http://127.0.0.1:8000", fallbackUrl)
-    }
-
     @Test
-    fun checkHealth_setsUserFacingErrorWhenRequestFails() = runTest {
-        val viewModel = StatusViewModel { _, _ -> throw UnknownHostException() }
+    fun checkHealth_setsUserFacingErrorWhenRequestFails() =
+        runTest {
+            val viewModel = StatusViewModel { _, _ -> throw UnknownHostException() }
 
-        viewModel.checkHealth("http://10.0.2.2:8000") {}
-        advanceUntilIdle()
+            viewModel.checkHealth("http://10.0.2.2:8000") {}
+            advanceUntilIdle()
 
-        val state = viewModel.healthState as HealthUiState.Error
-        assertEquals("서버 주소를 찾을 수 없습니다. API 주소와 네트워크 연결을 확인해 주세요.", state.message)
-    }
+            val state = viewModel.healthState as HealthUiState.Error
+            assertEquals("서버 주소를 찾을 수 없습니다. API 주소와 네트워크 연결을 확인해 주세요.", state.message)
+        }
 
     private fun healthFixture(): HealthResponseDto {
         val model = ModelStatusDto(modelLoaded = true, modelClasses = 3, modelPath = "models/demo.pt")
@@ -65,5 +67,3 @@ class StatusViewModelTest {
         )
     }
 }
-
-

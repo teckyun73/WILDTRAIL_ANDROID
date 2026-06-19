@@ -14,5 +14,3 @@ internal fun RecordsRoute(
         isLoading = recordsViewModel.sightingState is SightingUiState.Loading,
     )
 }
-
-

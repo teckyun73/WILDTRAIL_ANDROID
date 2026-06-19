@@ -162,12 +162,22 @@ The release APK is unsigned and intended for build verification only. Before Pla
 
 Use the pull request and issue templates under `.github/` for scoped changes and bug reports. Release candidate and merge-gate guidance lives in [docs/release-operations.md](docs/release-operations.md), and hands-on emulator validation lives in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md).
 
+## Quality Checks
+
+Run ktlint before pushing Kotlin changes:
+
+```bash
+./gradlew ktlintCheck
+```
+
+Use `./gradlew ktlintFormat` for local formatting. CI runs `ktlintCheck` before tests and build artifacts.
+
 ## Verification
 
 GitHub Actions runs this non-emulator verification on every `main` push and pull request:
 
 ```powershell
-.\gradlew.bat testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease --stacktrace
+.\gradlew.bat ktlintCheck testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease --stacktrace
 ```
 
 Before handing off changes locally, also run the emulator UI smoke suite when an AVD is available:
@@ -196,7 +206,7 @@ No output from the final logcat filter means no recent fatal app crash was detec
 - `StatusViewModel`, `SpeciesViewModel`, `TripsViewModel`, `RecordsViewModel`, and `IdentifyViewModel` state transitions
 - Trip route stop generation and Google Maps / `geo:` URI construction
 - Native map marker filtering, color mapping, and marker hue mapping
-- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing and environment presets, records context, identify result save actions, species search/detail/hotspot handoff, species error retry and empty-result states, trip error retry, species chooser refresh/error handling, unmatched species guidance, and trip numeric input wiring
+- ktlint Kotlin style checks in local and CI verification`r`n- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing and environment presets, records context, identify result save actions, species search/detail/hotspot handoff, species error retry and empty-result states, trip error retry, species chooser refresh/error handling, unmatched species guidance, and trip numeric input wiring
 
 ## Next Implementation Unit
 

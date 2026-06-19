@@ -20,5 +20,3 @@ data class SpeciesDetailDto(
     val description: String,
     @SerialName("image_url") val imageUrl: String? = null,
 )
-
-

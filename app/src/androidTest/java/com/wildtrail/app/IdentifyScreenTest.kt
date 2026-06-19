@@ -23,12 +23,13 @@ class IdentifyScreenTest {
 
     @Test
     fun readyResultSavesTopCandidateAndOpensCandidateDetail() {
-        val candidate = IdentificationCandidateDto(
-            speciesId = "lynx",
-            commonName = "삵",
-            scientificName = "Prionailurus bengalensis",
-            confidence = 0.91,
-        )
+        val candidate =
+            IdentificationCandidateDto(
+                speciesId = "lynx",
+                commonName = "삵",
+                scientificName = "Prionailurus bengalensis",
+                confidence = 0.91,
+            )
         var savedCandidate: IdentificationCandidateDto? = null
         var savedMediaType: String? = null
         var selectedSpeciesId: String? = null
@@ -37,14 +38,15 @@ class IdentifyScreenTest {
         composeRule.setContent {
             WildTrailTheme {
                 IdentifyScreen(
-                    identifyState = IdentifyUiState.Ready(
-                        IdentificationResultDto(
-                            mediaType = "image",
-                            candidates = listOf(candidate),
-                            message = "식별 완료",
-                            source = "stub",
+                    identifyState =
+                        IdentifyUiState.Ready(
+                            IdentificationResultDto(
+                                mediaType = "image",
+                                candidates = listOf(candidate),
+                                message = "식별 완료",
+                                source = "stub",
+                            ),
                         ),
-                    ),
                     selectedImageName = "lynx.jpg",
                     selectedAudioName = null,
                     isRecording = false,

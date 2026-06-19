@@ -37,9 +37,10 @@ internal fun WildTrailTopBar(selectedTab: AppTab) {
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-        ),
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.background,
+            ),
     )
 }
 
@@ -59,5 +60,3 @@ internal fun WildTrailBottomBar(
         }
     }
 }
-
-

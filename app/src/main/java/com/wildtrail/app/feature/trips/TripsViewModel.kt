@@ -13,7 +13,11 @@ import com.wildtrail.app.data.network.toUserFacingMessage
 import kotlinx.coroutines.launch
 
 class TripsViewModel(
-    private val createTripPlan: suspend (baseUrl: String, onBaseUrlFallback: (String) -> Unit, payload: TripPlanRequestDto) -> TripPlanResponseDto = { baseUrl, onBaseUrlFallback, payload ->
+    private val createTripPlan: suspend (
+        baseUrl: String,
+        onBaseUrlFallback: (String) -> Unit,
+        payload: TripPlanRequestDto,
+    ) -> TripPlanResponseDto = { baseUrl, onBaseUrlFallback, payload ->
         ApiCallRunner.run(baseUrl, onBaseUrlFallback) { it.planTrip(payload) }
     },
 ) : ViewModel() {
@@ -98,27 +102,30 @@ class TripsViewModel(
         baseUrl: String,
         onBaseUrlFallback: (String) -> Unit,
     ) {
-        val payload = TripPlanRequestDto(
-            speciesId = tripSpeciesId.ifBlank { "pica_pica" },
-            origin = tripOrigin.ifBlank { "서울역" },
-            days = tripDays.toIntOrNull()?.coerceIn(1, 7) ?: 1,
-            budgetKrw = tripBudget.toIntOrNull()?.coerceAtLeast(30_000) ?: 150_000,
-            travelers = tripTravelers.toIntOrNull()?.coerceIn(1, 10) ?: 1,
-            month = tripMonth.toIntOrNull()?.coerceIn(1, 12),
-            preferences = TripPreferencesDto(
-                transport = tripTransport,
-                accommodation = tripAccommodation,
-                difficulty = tripDifficulty,
-            ),
-        )
+        val payload =
+            TripPlanRequestDto(
+                speciesId = tripSpeciesId.ifBlank { "pica_pica" },
+                origin = tripOrigin.ifBlank { "서울역" },
+                days = tripDays.toIntOrNull()?.coerceIn(1, 7) ?: 1,
+                budgetKrw = tripBudget.toIntOrNull()?.coerceAtLeast(30_000) ?: 150_000,
+                travelers = tripTravelers.toIntOrNull()?.coerceIn(1, 10) ?: 1,
+                month = tripMonth.toIntOrNull()?.coerceIn(1, 12),
+                preferences =
+                    TripPreferencesDto(
+                        transport = tripTransport,
+                        accommodation = tripAccommodation,
+                        difficulty = tripDifficulty,
+                    ),
+            )
         viewModelScope.launch {
             nativeMapPlan = null
             tripState = TripUiState.Loading
-            tripState = try {
-                TripUiState.Ready(createTripPlan(baseUrl, onBaseUrlFallback, payload))
-            } catch (error: Exception) {
-                TripUiState.Error(error.toUserFacingMessage("여행 계획을 생성할 수 없습니다."))
-            }
+            tripState =
+                try {
+                    TripUiState.Ready(createTripPlan(baseUrl, onBaseUrlFallback, payload))
+                } catch (error: Exception) {
+                    TripUiState.Error(error.toUserFacingMessage("여행 계획을 생성할 수 없습니다."))
+                }
         }
     }
 }

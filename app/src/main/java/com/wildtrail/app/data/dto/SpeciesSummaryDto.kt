@@ -13,5 +13,3 @@ data class SpeciesSummaryDto(
     @SerialName("best_months") val bestMonths: String,
     @SerialName("image_url") val imageUrl: String? = null,
 )
-
-

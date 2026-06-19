@@ -13,13 +13,24 @@ import com.wildtrail.app.data.network.toUserFacingMessage
 import kotlinx.coroutines.launch
 
 class SpeciesViewModel(
-    private val loadSpeciesList: suspend (baseUrl: String, onBaseUrlFallback: (String) -> Unit) -> List<SpeciesSummaryDto> = { baseUrl, onBaseUrlFallback ->
+    private val loadSpeciesList: suspend (
+        baseUrl: String,
+        onBaseUrlFallback: (String) -> Unit,
+    ) -> List<SpeciesSummaryDto> = { baseUrl, onBaseUrlFallback ->
         ApiCallRunner.run(baseUrl, onBaseUrlFallback) { it.listSpecies() }
     },
-    private val loadSpeciesDetailById: suspend (speciesId: String, baseUrl: String, onBaseUrlFallback: (String) -> Unit) -> SpeciesDetailDto = { speciesId, baseUrl, onBaseUrlFallback ->
+    private val loadSpeciesDetailById: suspend (
+        speciesId: String,
+        baseUrl: String,
+        onBaseUrlFallback: (String) -> Unit,
+    ) -> SpeciesDetailDto = { speciesId, baseUrl, onBaseUrlFallback ->
         ApiCallRunner.run(baseUrl, onBaseUrlFallback) { it.getSpecies(speciesId) }
     },
-    private val loadHotspotsBySpeciesId: suspend (speciesId: String, baseUrl: String, onBaseUrlFallback: (String) -> Unit) -> List<HotspotDto> = { speciesId, baseUrl, onBaseUrlFallback ->
+    private val loadHotspotsBySpeciesId: suspend (
+        speciesId: String,
+        baseUrl: String,
+        onBaseUrlFallback: (String) -> Unit,
+    ) -> List<HotspotDto> = { speciesId, baseUrl, onBaseUrlFallback ->
         ApiCallRunner.run(baseUrl, onBaseUrlFallback) { it.listLocations(speciesId) }
     },
 ) : ViewModel() {
@@ -44,11 +55,12 @@ class SpeciesViewModel(
     ) {
         viewModelScope.launch {
             speciesState = SpeciesUiState.Loading
-            speciesState = try {
-                SpeciesUiState.Ready(loadSpeciesList(baseUrl, onBaseUrlFallback))
-            } catch (error: Exception) {
-                SpeciesUiState.Error(error.toUserFacingMessage("도감 목록을 불러올 수 없습니다."))
-            }
+            speciesState =
+                try {
+                    SpeciesUiState.Ready(loadSpeciesList(baseUrl, onBaseUrlFallback))
+                } catch (error: Exception) {
+                    SpeciesUiState.Error(error.toUserFacingMessage("도감 목록을 불러올 수 없습니다."))
+                }
         }
     }
 
@@ -60,19 +72,21 @@ class SpeciesViewModel(
         selectedSpeciesId = speciesId
         viewModelScope.launch {
             speciesDetailState = SpeciesDetailUiState.Loading
-            speciesDetailState = try {
-                SpeciesDetailUiState.Ready(loadSpeciesDetailById(speciesId, baseUrl, onBaseUrlFallback))
-            } catch (error: Exception) {
-                SpeciesDetailUiState.Error(error.toUserFacingMessage("도감 상세를 불러올 수 없습니다."))
-            }
+            speciesDetailState =
+                try {
+                    SpeciesDetailUiState.Ready(loadSpeciesDetailById(speciesId, baseUrl, onBaseUrlFallback))
+                } catch (error: Exception) {
+                    SpeciesDetailUiState.Error(error.toUserFacingMessage("도감 상세를 불러올 수 없습니다."))
+                }
         }
         viewModelScope.launch {
             hotspotState = HotspotUiState.Loading
-            hotspotState = try {
-                HotspotUiState.Ready(loadHotspotsBySpeciesId(speciesId, baseUrl, onBaseUrlFallback))
-            } catch (error: Exception) {
-                HotspotUiState.Error(error.toUserFacingMessage("관찰지를 불러올 수 없습니다."))
-            }
+            hotspotState =
+                try {
+                    HotspotUiState.Ready(loadHotspotsBySpeciesId(speciesId, baseUrl, onBaseUrlFallback))
+                } catch (error: Exception) {
+                    HotspotUiState.Error(error.toUserFacingMessage("관찰지를 불러올 수 없습니다."))
+                }
         }
     }
 

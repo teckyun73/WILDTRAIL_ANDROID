@@ -30,5 +30,3 @@ internal fun WildTrailDataEffects(
         }
     }
 }
-
-

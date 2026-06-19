@@ -20,7 +20,3 @@ internal fun StatusRoute(
         isLoading = statusViewModel.healthState is HealthUiState.Loading,
     )
 }
-
-
-
-

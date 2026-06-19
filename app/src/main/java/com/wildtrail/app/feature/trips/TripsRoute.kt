@@ -3,7 +3,6 @@ package com.wildtrail.app.feature.trips
 import androidx.compose.runtime.Composable
 import com.wildtrail.app.AppSettingsViewModel
 import com.wildtrail.app.feature.species.SpeciesViewModel
-import com.wildtrail.app.feature.species.SpeciesUiState
 
 @Composable
 internal fun TripsRoute(
@@ -41,5 +40,3 @@ internal fun TripsRoute(
         isLoading = tripsViewModel.tripState is TripUiState.Loading,
     )
 }
-
-

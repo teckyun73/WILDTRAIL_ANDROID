@@ -9,8 +9,8 @@ object ApiCallRunner {
         onBaseUrlFallback: (String) -> Unit,
         retryTransient: Boolean = true,
         operation: suspend (api: WildTrailApi) -> T,
-    ): T {
-        return runWithFactory(
+    ): T =
+        runWithFactory(
             baseUrl = baseUrl,
             onBaseUrlFallback = onBaseUrlFallback,
             retryTransient = retryTransient,
@@ -18,7 +18,6 @@ object ApiCallRunner {
             retryDelayMillis = 250,
             operation = operation,
         )
-    }
 
     internal suspend fun <T> runWithFactory(
         baseUrl: String,
@@ -28,8 +27,8 @@ object ApiCallRunner {
         retryDelayMillis: Long = 250,
         operation: suspend (api: WildTrailApi) -> T,
     ): T {
-        suspend fun runWithRetry(api: WildTrailApi): T {
-            return try {
+        suspend fun runWithRetry(api: WildTrailApi): T =
+            try {
                 operation(api)
             } catch (error: Exception) {
                 if (!retryTransient || error !is IOException) {
@@ -40,7 +39,6 @@ object ApiCallRunner {
                 }
                 operation(api)
             }
-        }
 
         return try {
             runWithRetry(apiFactory(baseUrl))

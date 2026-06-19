@@ -18,10 +18,18 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 class IdentifyViewModel(
-    private val identifyImageRequest: suspend (baseUrl: String, onBaseUrlFallback: (String) -> Unit, filePart: MultipartBody.Part) -> IdentificationResultDto = { baseUrl, onBaseUrlFallback, filePart ->
+    private val identifyImageRequest: suspend (
+        baseUrl: String,
+        onBaseUrlFallback: (String) -> Unit,
+        filePart: MultipartBody.Part,
+    ) -> IdentificationResultDto = { baseUrl, onBaseUrlFallback, filePart ->
         ApiCallRunner.run(baseUrl, onBaseUrlFallback) { it.identifyImage(filePart) }
     },
-    private val identifyAudioRequest: suspend (baseUrl: String, onBaseUrlFallback: (String) -> Unit, filePart: MultipartBody.Part) -> IdentificationResultDto = { baseUrl, onBaseUrlFallback, filePart ->
+    private val identifyAudioRequest: suspend (
+        baseUrl: String,
+        onBaseUrlFallback: (String) -> Unit,
+        filePart: MultipartBody.Part,
+    ) -> IdentificationResultDto = { baseUrl, onBaseUrlFallback, filePart ->
         ApiCallRunner.run(baseUrl, onBaseUrlFallback) { it.identifyAudio(filePart) }
     },
 ) : ViewModel() {
@@ -56,12 +64,13 @@ class IdentifyViewModel(
         selectedAudioName = null
         viewModelScope.launch {
             identifyState = IdentifyUiState.Loading
-            identifyState = try {
-                val filePart = createImagePart(context, uri)
-                IdentifyUiState.Ready(identifyImageRequest(baseUrl, onBaseUrlFallback, filePart))
-            } catch (error: Exception) {
-                IdentifyUiState.Error(error.toUserFacingMessage("이미지 식별에 실패했습니다."))
-            }
+            identifyState =
+                try {
+                    val filePart = createImagePart(context, uri)
+                    IdentifyUiState.Ready(identifyImageRequest(baseUrl, onBaseUrlFallback, filePart))
+                } catch (error: Exception) {
+                    IdentifyUiState.Error(error.toUserFacingMessage("이미지 식별에 실패했습니다."))
+                }
         }
     }
 
@@ -75,12 +84,13 @@ class IdentifyViewModel(
         selectedImageName = null
         viewModelScope.launch {
             identifyState = IdentifyUiState.Loading
-            identifyState = try {
-                val filePart = createAudioPart(context, uri)
-                IdentifyUiState.Ready(identifyAudioRequest(baseUrl, onBaseUrlFallback, filePart))
-            } catch (error: Exception) {
-                IdentifyUiState.Error(error.toUserFacingMessage("오디오 식별에 실패했습니다."))
-            }
+            identifyState =
+                try {
+                    val filePart = createAudioPart(context, uri)
+                    IdentifyUiState.Ready(identifyAudioRequest(baseUrl, onBaseUrlFallback, filePart))
+                } catch (error: Exception) {
+                    IdentifyUiState.Error(error.toUserFacingMessage("오디오 식별에 실패했습니다."))
+                }
         }
     }
 
@@ -95,37 +105,42 @@ class IdentifyViewModel(
         recordingMessage = "${durationMillis / 1000.0}초 녹음 업로드 중..."
         viewModelScope.launch {
             identifyState = IdentifyUiState.Loading
-            identifyState = try {
-                val filePart = createAudioPart(file)
-                recordingMessage = "녹음 파일 분석 완료"
-                IdentifyUiState.Ready(identifyAudioRequest(baseUrl, onBaseUrlFallback, filePart))
-            } catch (error: Exception) {
-                recordingMessage = null
-                IdentifyUiState.Error(error.toUserFacingMessage("녹음 오디오 식별에 실패했습니다."))
-            }
+            identifyState =
+                try {
+                    val filePart = createAudioPart(file)
+                    recordingMessage = "녹음 파일 분석 완료"
+                    IdentifyUiState.Ready(identifyAudioRequest(baseUrl, onBaseUrlFallback, filePart))
+                } catch (error: Exception) {
+                    recordingMessage = null
+                    IdentifyUiState.Error(error.toUserFacingMessage("녹음 오디오 식별에 실패했습니다."))
+                }
         }
     }
 }
 
-private fun createImagePart(context: Context, uri: Uri): MultipartBody.Part {
-    return createFilePart(
+private fun createImagePart(
+    context: Context,
+    uri: Uri,
+): MultipartBody.Part =
+    createFilePart(
         context = context,
         uri = uri,
         fallbackMimeType = "image/jpeg",
         fallbackFileName = "wildtrail-upload.jpg",
         readError = "이미지 파일을 읽을 수 없습니다.",
     )
-}
 
-private fun createAudioPart(context: Context, uri: Uri): MultipartBody.Part {
-    return createFilePart(
+private fun createAudioPart(
+    context: Context,
+    uri: Uri,
+): MultipartBody.Part =
+    createFilePart(
         context = context,
         uri = uri,
         fallbackMimeType = "audio/mpeg",
         fallbackFileName = "wildtrail-audio.mp3",
         readError = "오디오 파일을 읽을 수 없습니다.",
     )
-}
 
 private fun createAudioPart(file: File): MultipartBody.Part {
     val body = file.readBytes().toRequestBody("audio/mp4".toMediaTypeOrNull())
@@ -140,15 +155,19 @@ private fun createFilePart(
     readError: String,
 ): MultipartBody.Part {
     val resolver = context.contentResolver
-    val bytes = resolver.openInputStream(uri)?.use { it.readBytes() }
-        ?: error(readError)
+    val bytes =
+        resolver.openInputStream(uri)?.use { it.readBytes() }
+            ?: error(readError)
     val mimeType = resolver.getType(uri) ?: fallbackMimeType
     val fileName = queryDisplayName(context, uri) ?: fallbackFileName
     val body = bytes.toRequestBody(mimeType.toMediaTypeOrNull())
     return MultipartBody.Part.createFormData("file", fileName, body)
 }
 
-private fun queryDisplayName(context: Context, uri: Uri): String? {
+private fun queryDisplayName(
+    context: Context,
+    uri: Uri,
+): String? {
     val projection = arrayOf(OpenableColumns.DISPLAY_NAME)
     return context.contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
         val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)

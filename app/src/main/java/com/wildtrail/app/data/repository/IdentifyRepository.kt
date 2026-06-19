@@ -7,13 +7,7 @@ import okhttp3.MultipartBody
 class IdentifyRepository(
     private val api: WildTrailApi,
 ) {
-    suspend fun identifyImage(file: MultipartBody.Part): IdentificationResultDto {
-        return api.identifyImage(file)
-    }
+    suspend fun identifyImage(file: MultipartBody.Part): IdentificationResultDto = api.identifyImage(file)
 
-    suspend fun identifyAudio(file: MultipartBody.Part): IdentificationResultDto {
-        return api.identifyAudio(file)
-    }
+    suspend fun identifyAudio(file: MultipartBody.Part): IdentificationResultDto = api.identifyAudio(file)
 }
-
-

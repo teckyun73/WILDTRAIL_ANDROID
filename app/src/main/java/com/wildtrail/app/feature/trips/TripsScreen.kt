@@ -43,9 +43,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.wildtrail.app.feature.species.SpeciesUiState
 import com.wildtrail.app.data.dto.SpeciesSummaryDto
 import com.wildtrail.app.data.dto.TripPlanResponseDto
+import com.wildtrail.app.feature.species.SpeciesUiState
 import com.wildtrail.app.ui.components.OfflineErrorPanel
 import com.wildtrail.app.ui.theme.Forest
 import kotlinx.coroutines.delay
@@ -100,10 +100,11 @@ fun TripsScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(tripScrollState)
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(tripScrollState)
+                .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -125,9 +126,10 @@ fun TripsScreen(
                     onValueChange = onSpeciesIdChange,
                     label = { Text("Species ID") },
                     supportingText = { Text("예: pica_pica, grus_japonensis") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("trip-species-id"),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .testTag("trip-species-id"),
                 )
                 TripSpeciesChooser(
                     speciesState = speciesState,
@@ -139,34 +141,38 @@ fun TripsScreen(
                     value = origin,
                     onValueChange = onOriginChange,
                     label = { Text("출발지") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("trip-origin"),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .testTag("trip-origin"),
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
                         value = days,
                         onValueChange = onDaysChange,
                         label = { Text("일수") },
-                        modifier = Modifier
-                            .weight(1f)
-                            .testTag("trip-days"),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .testTag("trip-days"),
                     )
                     OutlinedTextField(
                         value = travelers,
                         onValueChange = onTravelersChange,
                         label = { Text("인원") },
-                        modifier = Modifier
-                            .weight(1f)
-                            .testTag("trip-travelers"),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .testTag("trip-travelers"),
                     )
                     OutlinedTextField(
                         value = month,
                         onValueChange = onMonthChange,
                         label = { Text("월") },
-                        modifier = Modifier
-                            .weight(1f)
-                            .testTag("trip-month"),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .testTag("trip-month"),
                     )
                 }
                 TripMonthSuggestions(
@@ -179,9 +185,10 @@ fun TripsScreen(
                     value = budget,
                     onValueChange = onBudgetChange,
                     label = { Text("예산(원)") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("trip-budget"),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .testTag("trip-budget"),
                 )
                 TripPreferenceControls(
                     transport = transport,
@@ -195,9 +202,10 @@ fun TripsScreen(
                     onClick = onPlanTrip,
                     enabled = !isLoading,
                     colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("trip-plan-button"),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .testTag("trip-plan-button"),
                 ) {
                     Text(if (isLoading) "계획 생성 중..." else "여행 계획 생성")
                 }
@@ -207,21 +215,23 @@ fun TripsScreen(
             when (current) {
                 TripUiState.Empty -> TripIdlePanel("조건을 입력하고 여행 계획을 생성하세요.")
                 TripUiState.Loading -> TripLoadingPanel()
-                is TripUiState.Error -> TripErrorPanel(
-                    message = current.message,
-                    onRetry = onPlanTrip,
-                    isLoading = isLoading,
-                )
-                is TripUiState.Ready -> TripPlanPanel(
-                    plan = current.plan,
-                    onReplan = onPlanTrip,
-                    onOpenNativeMap = { onOpenNativeMap(current.plan) },
-                    onEditConditions = {
-                        tripScreenScope.launch {
-                            tripScrollState.animateScrollTo(0)
-                        }
-                    },
-                )
+                is TripUiState.Error ->
+                    TripErrorPanel(
+                        message = current.message,
+                        onRetry = onPlanTrip,
+                        isLoading = isLoading,
+                    )
+                is TripUiState.Ready ->
+                    TripPlanPanel(
+                        plan = current.plan,
+                        onReplan = onPlanTrip,
+                        onOpenNativeMap = { onOpenNativeMap(current.plan) },
+                        onEditConditions = {
+                            tripScreenScope.launch {
+                                tripScrollState.animateScrollTo(0)
+                            }
+                        },
+                    )
             }
         }
     }
@@ -251,9 +261,10 @@ private fun TripMonthSuggestions(
     month: String,
     onMonthChange: (String) -> Unit,
 ) {
-    val selectedSpecies = (speciesState as? SpeciesUiState.Ready)
-        ?.species
-        ?.firstOrNull { it.id == speciesId }
+    val selectedSpecies =
+        (speciesState as? SpeciesUiState.Ready)
+            ?.species
+            ?.firstOrNull { it.id == speciesId }
     val months = selectedSpecies?.bestMonths?.let(::parseBestMonths).orEmpty()
     if (selectedSpecies == null || months.isEmpty()) return
 
@@ -271,15 +282,14 @@ private fun TripMonthSuggestions(
     }
 }
 
-private fun parseBestMonths(value: String): List<Int> {
-    return Regex("\\d+")
+private fun parseBestMonths(value: String): List<Int> =
+    Regex("\\d+")
         .findAll(value)
         .mapNotNull { it.value.toIntOrNull() }
         .filter { it in 1..12 }
         .distinct()
         .sorted()
         .toList()
-}
 
 @Composable
 private fun TripPreferenceControls(
@@ -295,30 +305,33 @@ private fun TripPreferenceControls(
         PreferenceSelector(
             label = "이동",
             value = transport,
-            options = listOf(
-                "public" to "대중교통",
-                "car" to "자가용",
-            ),
+            options =
+                listOf(
+                    "public" to "대중교통",
+                    "car" to "자가용",
+                ),
             onValueChange = onTransportChange,
         )
         PreferenceSelector(
             label = "숙소",
             value = accommodation,
-            options = listOf(
-                "guesthouse" to "게스트하우스",
-                "hotel" to "호텔",
-                "camping" to "캠핑",
-            ),
+            options =
+                listOf(
+                    "guesthouse" to "게스트하우스",
+                    "hotel" to "호텔",
+                    "camping" to "캠핑",
+                ),
             onValueChange = onAccommodationChange,
         )
         PreferenceSelector(
             label = "난이도",
             value = difficulty,
-            options = listOf(
-                "easy" to "쉬움",
-                "moderate" to "보통",
-                "hard" to "도전",
-            ),
+            options =
+                listOf(
+                    "easy" to "쉬움",
+                    "moderate" to "보통",
+                    "hard" to "도전",
+                ),
             onValueChange = onDifficultyChange,
         )
     }
@@ -378,58 +391,63 @@ private fun TripSpeciesChooser(
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text("종 선택", style = MaterialTheme.typography.labelLarge, color = Forest, fontWeight = FontWeight.SemiBold)
         when (speciesState) {
-            SpeciesUiState.Idle -> Button(
-                onClick = onRefreshSpecies,
-                colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("trip-species-refresh-button"),
-            ) {
-                Text("도감 목록 불러오기")
-            }
-            SpeciesUiState.Loading -> Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                CircularProgressIndicator(modifier = Modifier.size(18.dp), color = Forest)
-                Text(
-                    "도감 목록을 불러오는 중",
-                    modifier = Modifier.padding(start = 10.dp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
-            is SpeciesUiState.Error -> Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    "종 목록을 불러오지 못했습니다.",
-                    modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall,
-                )
+            SpeciesUiState.Idle ->
                 Button(
                     onClick = onRefreshSpecies,
                     colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                    modifier = Modifier.testTag("trip-species-error-retry-button"),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .testTag("trip-species-refresh-button"),
                 ) {
-                    Text("재시도")
+                    Text("도감 목록 불러오기")
                 }
-            }
+            SpeciesUiState.Loading ->
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(18.dp), color = Forest)
+                    Text(
+                        "도감 목록을 불러오는 중",
+                        modifier = Modifier.padding(start = 10.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            is SpeciesUiState.Error ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        "종 목록을 불러오지 못했습니다.",
+                        modifier = Modifier.weight(1f),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    Button(
+                        onClick = onRefreshSpecies,
+                        colors = ButtonDefaults.buttonColors(containerColor = Forest),
+                        modifier = Modifier.testTag("trip-species-error-retry-button"),
+                    ) {
+                        Text("재시도")
+                    }
+                }
             is SpeciesUiState.Ready -> {
                 val query = speciesId.trim().lowercase()
-                val matches = speciesState.species
-                    .filter { item ->
-                        query.isBlank() ||
-                            item.id.lowercase().contains(query) ||
-                            item.commonName.lowercase().contains(query) ||
-                            item.scientificName.lowercase().contains(query)
-                    }
-                    .take(5)
+                val matches =
+                    speciesState.species
+                        .filter { item ->
+                            query.isBlank() ||
+                                item.id.lowercase().contains(query) ||
+                                item.commonName.lowercase().contains(query) ||
+                                item.scientificName.lowercase().contains(query)
+                        }.take(5)
                 val selected = speciesState.species.firstOrNull { it.id == speciesId }
                 Text(
                     selected?.let { "${it.commonName} · ${it.id}" } ?: "입력값과 가까운 종을 선택하세요.",
@@ -465,12 +483,13 @@ private fun TripSpeciesOption(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(if (selected) Forest.copy(alpha = 0.10f) else MaterialTheme.colorScheme.surface)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .background(if (selected) Forest.copy(alpha = 0.10f) else MaterialTheme.colorScheme.surface)
+                .clickable(onClick = onClick)
+                .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -597,20 +616,22 @@ private fun RoutePreviewPanel(
                 }
             }
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Forest.copy(alpha = 0.08f)),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Forest.copy(alpha = 0.08f)),
             ) {
                 RouteCanvas(stops.size, modifier = Modifier.fillMaxSize())
             }
             Button(
                 onClick = onOpenNativeMap,
                 colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("trip-open-native-map-button"),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .testTag("trip-open-native-map-button"),
             ) {
                 Text("앱 지도 보기")
             }
@@ -643,24 +664,25 @@ private fun RoutePreviewPanel(
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 stops.forEachIndexed { index, stop ->
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable {
-                                openPlaceInMapApp(
-                                    context = context,
-                                    stop = stop,
-                                )
-                            }
-                            .padding(vertical = 6.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable {
+                                    openPlaceInMapApp(
+                                        context = context,
+                                        stop = stop,
+                                    )
+                                }.padding(vertical = 6.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Box(
-                            modifier = Modifier
-                                .size(28.dp)
-                                .clip(CircleShape)
-                                .background(if (index == stops.lastIndex) Forest else Forest.copy(alpha = 0.14f)),
+                            modifier =
+                                Modifier
+                                    .size(28.dp)
+                                    .clip(CircleShape)
+                                    .background(if (index == stops.lastIndex) Forest else Forest.copy(alpha = 0.14f)),
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
@@ -698,23 +720,28 @@ private fun RouteSummaryChip(text: String) {
 }
 
 @Composable
-private fun RouteCanvas(stopCount: Int, modifier: Modifier = Modifier) {
+private fun RouteCanvas(
+    stopCount: Int,
+    modifier: Modifier = Modifier,
+) {
     val routeColor = Forest
     val guideColor = Forest.copy(alpha = 0.16f)
     val pointColor = MaterialTheme.colorScheme.surface
     Canvas(modifier = modifier) {
         val count = stopCount.coerceAtLeast(2)
         val stepX = size.width / (count + 1)
-        val points = List(count) { index ->
-            val x = stepX * (index + 1)
-            val yRatio = when (index % 4) {
-                0 -> 0.68f
-                1 -> 0.32f
-                2 -> 0.44f
-                else -> 0.22f
+        val points =
+            List(count) { index ->
+                val x = stepX * (index + 1)
+                val yRatio =
+                    when (index % 4) {
+                        0 -> 0.68f
+                        1 -> 0.32f
+                        2 -> 0.44f
+                        else -> 0.22f
+                    }
+                Offset(x, size.height * yRatio)
             }
-            Offset(x, size.height * yRatio)
-        }
         points.zipWithNext().forEach { (start, end) ->
             drawLine(
                 color = guideColor,
@@ -751,9 +778,10 @@ private fun TripIdlePanel(message: String) {
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
         Text(
             message,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
@@ -763,9 +791,10 @@ private fun TripIdlePanel(message: String) {
 private fun TripLoadingPanel() {
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -780,7 +809,10 @@ private fun TripLoadingPanel() {
 }
 
 @Composable
-private fun TripDetailField(label: String, value: String) {
+private fun TripDetailField(
+    label: String,
+    value: String,
+) {
     if (value.isBlank()) return
     Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
         Text(label, style = MaterialTheme.typography.labelLarge, color = Forest, fontWeight = FontWeight.SemiBold)

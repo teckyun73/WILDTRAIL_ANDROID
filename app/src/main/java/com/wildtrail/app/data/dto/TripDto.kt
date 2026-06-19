@@ -74,5 +74,3 @@ data class TripPlanResponseDto(
     val disclaimer: String,
     val source: String,
 )
-
-

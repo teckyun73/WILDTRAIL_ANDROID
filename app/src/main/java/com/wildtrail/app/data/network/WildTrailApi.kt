@@ -62,5 +62,3 @@ interface WildTrailApi {
         @Body payload: TripPlanRequestDto,
     ): TripPlanResponseDto
 }
-
-

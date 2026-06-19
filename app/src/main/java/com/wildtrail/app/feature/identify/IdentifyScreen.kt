@@ -55,36 +55,40 @@ fun IdentifyScreen(
     onSaveCandidate: (IdentificationCandidateDto, String) -> Unit,
     saveMessage: String?,
 ) {
-    val imagePicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-            if (uri != null) onImageSelected(uri)
-        },
-    )
-    val audioPicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            if (uri != null) onAudioSelected(uri)
-        },
-    )
+    val imagePicker =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = { uri ->
+                if (uri != null) onImageSelected(uri)
+            },
+        )
+    val audioPicker =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = { uri ->
+                if (uri != null) onAudioSelected(uri)
+            },
+        )
     var audioPermissionMessage by remember { mutableStateOf<String?>(null) }
-    val audioPermission = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { granted ->
-            if (granted) {
-                audioPermissionMessage = null
-                onStartRecording()
-            } else {
-                audioPermissionMessage = "마이크 권한이 필요합니다. Android 설정에서 WildTrail의 마이크 권한을 허용해 주세요."
-            }
-        },
-    )
+    val audioPermission =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = { granted ->
+                if (granted) {
+                    audioPermissionMessage = null
+                    onStartRecording()
+                } else {
+                    audioPermissionMessage = "마이크 권한이 필요합니다. Android 설정에서 WildTrail의 마이크 권한을 허용해 주세요."
+                }
+            },
+        )
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -175,9 +179,10 @@ fun IdentifyScreen(
                         }
                     },
                     enabled = identifyState !is IdentifyUiState.Loading,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isRecording) Color(0xFFB3261E) else Forest,
-                    ),
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = if (isRecording) Color(0xFFB3261E) else Forest,
+                        ),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
@@ -194,17 +199,19 @@ fun IdentifyScreen(
             when (current) {
                 IdentifyUiState.Empty -> IdentifyIdlePanel("이미지나 오디오를 선택하면 식별 결과가 여기에 표시됩니다.")
                 IdentifyUiState.Loading -> IdentifyLoadingPanel()
-                is IdentifyUiState.Error -> OfflineErrorPanel(
-                    title = "식별 실패",
-                    message = current.message,
-                    guidance = "API 서버와 네트워크 연결을 확인한 뒤 같은 파일을 다시 선택하거나 녹음을 다시 시작하세요.",
-                )
-                is IdentifyUiState.Ready -> IdentificationResultPanel(
-                    result = current.result,
-                    onCandidateSelected = onCandidateSelected,
-                    onSaveCandidate = onSaveCandidate,
-                    saveMessage = saveMessage,
-                )
+                is IdentifyUiState.Error ->
+                    OfflineErrorPanel(
+                        title = "식별 실패",
+                        message = current.message,
+                        guidance = "API 서버와 네트워크 연결을 확인한 뒤 같은 파일을 다시 선택하거나 녹음을 다시 시작하세요.",
+                    )
+                is IdentifyUiState.Ready ->
+                    IdentificationResultPanel(
+                        result = current.result,
+                        onCandidateSelected = onCandidateSelected,
+                        onSaveCandidate = onSaveCandidate,
+                        saveMessage = saveMessage,
+                    )
             }
         }
     }
@@ -247,9 +254,10 @@ private fun IdentificationResultPanel(
                 Button(
                     onClick = { onSaveCandidate(result.candidates.first(), result.mediaType) },
                     colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("identify-save-top-candidate-button"),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .testTag("identify-save-top-candidate-button"),
                 ) {
                     Text("상위 후보 기록 저장")
                 }
@@ -271,11 +279,12 @@ private fun IdentificationCandidateRow(
     onCandidateSelected: (String) -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onCandidateSelected(candidate.speciesId) }
-            .testTag("identify-candidate-${candidate.speciesId}")
-            .padding(vertical = 6.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onCandidateSelected(candidate.speciesId) }
+                .testTag("identify-candidate-${candidate.speciesId}")
+                .padding(vertical = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -302,9 +311,10 @@ private fun IdentifyIdlePanel(message: String) {
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
         Text(
             message,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
@@ -314,9 +324,10 @@ private fun IdentifyIdlePanel(message: String) {
 private fun IdentifyLoadingPanel() {
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -326,11 +337,9 @@ private fun IdentifyLoadingPanel() {
     }
 }
 
-private fun confidenceColor(confidence: Double): Color {
-    return when {
+private fun confidenceColor(confidence: Double): Color =
+    when {
         confidence >= 0.8 -> Forest
         confidence >= 0.6 -> Color(0xFF8A6200)
         else -> Color(0xFFB3261E)
     }
-}
-

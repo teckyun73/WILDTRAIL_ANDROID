@@ -116,12 +116,13 @@ class SpeciesScreenErrorTest {
         }
     }
 
-    private fun speciesFixture() = SpeciesSummaryDto(
-        id = "lynx",
-        commonName = "삵",
-        scientificName = "Prionailurus bengalensis",
-        category = "mammal",
-        protectionGrade = "II",
-        bestMonths = "4-10",
-    )
+    private fun speciesFixture() =
+        SpeciesSummaryDto(
+            id = "lynx",
+            commonName = "삵",
+            scientificName = "Prionailurus bengalensis",
+            category = "mammal",
+            protectionGrade = "II",
+            bestMonths = "4-10",
+        )
 }

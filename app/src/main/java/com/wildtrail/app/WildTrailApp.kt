@@ -25,12 +25,13 @@ fun WildTrailAppContent(viewModels: WildTrailViewModels) {
     val identifyViewModel = viewModels.identify
     var selectedTab by rememberSaveable { mutableStateOf(AppTab.Identify) }
     val context = LocalContext.current
-    val recordingSessionState = rememberRecordingSessionState(
-        context = context,
-        identifyViewModel = identifyViewModel,
-        baseUrl = settingsViewModel.apiBaseUrl,
-        onBaseUrlFallback = settingsViewModel::updateApiBaseUrl,
-    )
+    val recordingSessionState =
+        rememberRecordingSessionState(
+            context = context,
+            identifyViewModel = identifyViewModel,
+            baseUrl = settingsViewModel.apiBaseUrl,
+            onBaseUrlFallback = settingsViewModel::updateApiBaseUrl,
+        )
 
     WildTrailDataEffects(
         selectedTab = selectedTab,
@@ -48,9 +49,10 @@ fun WildTrailAppContent(viewModels: WildTrailViewModels) {
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding),
         ) {
             WildTrailTabContent(
                 selectedTab = selectedTab,
@@ -64,4 +66,3 @@ fun WildTrailAppContent(viewModels: WildTrailViewModels) {
         }
     }
 }
-

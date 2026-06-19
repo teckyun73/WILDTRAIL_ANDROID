@@ -6,20 +6,25 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
-val localProperties = Properties().apply {
-    val localFile = rootProject.file("local.properties")
-    if (localFile.exists()) {
-        localFile.inputStream().use(::load)
+val localProperties =
+    Properties().apply {
+        val localFile = rootProject.file("local.properties")
+        if (localFile.exists()) {
+            localFile.inputStream().use(::load)
+        }
     }
-}
-fun projectSetting(name: String): String? {
-    return localProperties.getProperty(name)
+
+fun projectSetting(name: String): String? =
+    localProperties
+        .getProperty(name)
         ?.takeIf { it.isNotBlank() }
-        ?: providers.gradleProperty(name).orNull
+        ?: providers
+            .gradleProperty(name)
+            .orNull
             ?.takeIf { it.isNotBlank() }
-}
 
 val mapsApiKey = projectSetting("MAPS_API_KEY") ?: ""
 val defaultApiBaseUrl = projectSetting("API_BASE_URL") ?: "http://10.0.2.2:8000"
@@ -62,7 +67,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -71,7 +76,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
 
     buildFeatures {
         compose = true
@@ -91,6 +95,14 @@ kotlin {
     }
 }
 
+ktlint {
+    android.set(true)
+    outputToConsole.set(true)
+    ignoreFailures.set(false)
+    filter {
+        exclude("**/generated/**")
+    }
+}
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.12.01")
 
@@ -121,5 +133,3 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
-
-

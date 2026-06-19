@@ -14,13 +14,15 @@ import org.junit.Test
 class RouteModelsTest {
     @Test
     fun tripRouteStops_usesServerRouteStopsWhenPresentAndTrimsNames() {
-        val plan = tripPlanFixture(
-            routeStops = listOf(
-                TripRouteStopDto(name = "  서울역  ", role = "origin", latitude = 37.55, longitude = 126.97),
-                TripRouteStopDto(name = "", role = "blank"),
-                TripRouteStopDto(name = "DMZ 생태길", role = "", latitude = 38.1, longitude = 127.2),
-            ),
-        )
+        val plan =
+            tripPlanFixture(
+                routeStops =
+                    listOf(
+                        TripRouteStopDto(name = "  서울역  ", role = "origin", latitude = 37.55, longitude = 126.97),
+                        TripRouteStopDto(name = "", role = "blank"),
+                        TripRouteStopDto(name = "DMZ 생태길", role = "", latitude = 38.1, longitude = 127.2),
+                    ),
+            )
 
         val stops = tripRouteStops(plan)
 
@@ -33,22 +35,24 @@ class RouteModelsTest {
 
     @Test
     fun tripRouteStops_buildsFallbackRouteFromOriginDistinctDayLocationsAndDestination() {
-        val plan = tripPlanFixture(
-            routeStops = emptyList(),
-            daysPlan = listOf(
-                dayPlan(
-                    "서울역",
-                    "철원 평화전망대",
-                    "철원 평화전망대",
-                    "두루미 관찰대",
-                    "DMZ 생태길",
-                    "",
-                    "민통선 안내소",
-                    "습지 탐방로",
-                    "추가 경유지",
-                ),
-            ),
-        )
+        val plan =
+            tripPlanFixture(
+                routeStops = emptyList(),
+                daysPlan =
+                    listOf(
+                        dayPlan(
+                            "서울역",
+                            "철원 평화전망대",
+                            "철원 평화전망대",
+                            "두루미 관찰대",
+                            "DMZ 생태길",
+                            "",
+                            "민통선 안내소",
+                            "습지 탐방로",
+                            "추가 경유지",
+                        ),
+                    ),
+            )
 
         val stops = tripRouteStops(plan)
 
@@ -63,12 +67,13 @@ class RouteModelsTest {
 
     @Test
     fun tripRouteStops_addsDestinationTwiceWhenOnlyOneNamedPlaceExistsToKeepRouteUsable() {
-        val plan = tripPlanFixture(
-            origin = "DMZ 생태길",
-            hotspotName = "DMZ 생태길",
-            routeStops = emptyList(),
-            daysPlan = listOf(dayPlan("DMZ 생태길")),
-        )
+        val plan =
+            tripPlanFixture(
+                origin = "DMZ 생태길",
+                hotspotName = "DMZ 생태길",
+                routeStops = emptyList(),
+                daysPlan = listOf(dayPlan("DMZ 생태길")),
+            )
 
         val stops = tripRouteStops(plan)
 
@@ -81,12 +86,13 @@ class RouteModelsTest {
 
     @Test
     fun tripRouteStops_returnsDefaultRouteWhenPlanHasNoUsableNames() {
-        val plan = tripPlanFixture(
-            origin = " ",
-            hotspotName = " ",
-            routeStops = emptyList(),
-            daysPlan = listOf(dayPlan(" ", "")),
-        )
+        val plan =
+            tripPlanFixture(
+                origin = " ",
+                hotspotName = " ",
+                routeStops = emptyList(),
+                daysPlan = listOf(dayPlan(" ", "")),
+            )
 
         val stops = tripRouteStops(plan)
 
@@ -98,11 +104,12 @@ class RouteModelsTest {
 
     @Test
     fun routeSummary_countsCoordinateStopsAndStraightLineDistance() {
-        val stops = listOf(
-            RouteStop("서울역", "출발", 37.55, 126.97),
-            RouteStop("좌표 없는 경유지", "경유"),
-            RouteStop("DMZ 생태길", "주요 관찰지", 38.1, 127.2),
-        )
+        val stops =
+            listOf(
+                RouteStop("서울역", "출발", 37.55, 126.97),
+                RouteStop("좌표 없는 경유지", "경유"),
+                RouteStop("DMZ 생태길", "주요 관찰지", 38.1, 127.2),
+            )
 
         val summary = routeSummary(stops)
 
@@ -121,14 +128,16 @@ class RouteModelsTest {
         assertNull(summary.straightLineDistanceKm)
         assertEquals("좌표 거리 미정", formatRouteDistance(summary.straightLineDistanceKm))
     }
+
     @Test
     fun buildRouteMapUri_encodesOriginDestinationAndWaypoints() {
-        val stops = listOf(
-            RouteStop("서울역", "출발"),
-            RouteStop("철원 평화전망대", "경유"),
-            RouteStop("두루미 관찰대", "경유"),
-            RouteStop("DMZ 생태길", "주요 관찰지"),
-        )
+        val stops =
+            listOf(
+                RouteStop("서울역", "출발"),
+                RouteStop("철원 평화전망대", "경유"),
+                RouteStop("두루미 관찰대", "경유"),
+                RouteStop("DMZ 생태길", "주요 관찰지"),
+            )
 
         val uri = buildRouteMapUri(stops)
 
@@ -136,7 +145,9 @@ class RouteModelsTest {
             "https://www.google.com/maps/dir/?api=1" +
                 "&origin=%EC%84%9C%EC%9A%B8%EC%97%AD%20%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD" +
                 "&destination=DMZ%20%EC%83%9D%ED%83%9C%EA%B8%B8%20%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD" +
-                "&waypoints=%EC%B2%A0%EC%9B%90%20%ED%8F%89%ED%99%94%EC%A0%84%EB%A7%9D%EB%8C%80%20%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD%7C%EB%91%90%EB%A3%A8%EB%AF%B8%20%EA%B4%80%EC%B0%B0%EB%8C%80%20%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD" +
+                "&waypoints=" +
+                "%EC%B2%A0%EC%9B%90%20%ED%8F%89%ED%99%94%EC%A0%84%EB%A7%9D%EB%8C%80%20%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD" +
+                "%7C%EB%91%90%EB%A3%A8%EB%AF%B8%20%EA%B4%80%EC%B0%B0%EB%8C%80%20%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD" +
                 "&travelmode=transit",
             uri,
         )
@@ -144,11 +155,12 @@ class RouteModelsTest {
 
     @Test
     fun buildRouteMapUri_usesCoordinateDestinationAndSkipsWaypointsWhenDestinationHasCoordinates() {
-        val stops = listOf(
-            RouteStop("서울역", "출발"),
-            RouteStop("철원 평화전망대", "경유"),
-            RouteStop("DMZ 생태길", "주요 관찰지", 38.1, 127.2),
-        )
+        val stops =
+            listOf(
+                RouteStop("서울역", "출발"),
+                RouteStop("철원 평화전망대", "경유"),
+                RouteStop("DMZ 생태길", "주요 관찰지", 38.1, 127.2),
+            )
 
         val uri = buildRouteMapUri(stops)
 
@@ -192,17 +204,20 @@ class RouteModelsTest {
         assertNull(buildPlaceMapUri(null))
         assertNull(buildPlaceMapUri(RouteStop(" ", "경유")))
     }
-    private fun dayPlan(vararg locations: String) = TripDayPlanDto(
-        day = 1,
-        title = "탐방",
-        items = locations.mapIndexed { index, location ->
-            TripDayItemDto(
-                time = "%02d:00".format(9 + index),
-                activity = "이동",
-                location = location,
-            )
-        },
-    )
+
+    private fun dayPlan(vararg locations: String) =
+        TripDayPlanDto(
+            day = 1,
+            title = "탐방",
+            items =
+                locations.mapIndexed { index, location ->
+                    TripDayItemDto(
+                        time = "%02d:00".format(9 + index),
+                        activity = "이동",
+                        location = location,
+                    )
+                },
+        )
 
     private fun tripPlanFixture(
         origin: String = "서울역",
@@ -223,17 +238,17 @@ class RouteModelsTest {
         checklist = listOf("쌍안경", "물"),
         routeStops = routeStops,
         daysPlan = daysPlan,
-        costs = CostBreakdownDto(
-            transport = 50_000,
-            accommodation = 0,
-            food = 20_000,
-            entryFee = 0,
-            misc = 10_000,
-            total = 80_000,
-            perPerson = 80_000,
-        ),
+        costs =
+            CostBreakdownDto(
+                transport = 50_000,
+                accommodation = 0,
+                food = 20_000,
+                entryFee = 0,
+                misc = 10_000,
+                total = 80_000,
+                perPerson = 80_000,
+            ),
         disclaimer = "실제 현장 상황을 확인하세요.",
         source = "test",
     )
 }
-

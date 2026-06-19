@@ -20,5 +20,3 @@ data class HotspotDto(
     val facilities: String,
     @SerialName("safety_note") val safetyNote: String,
 )
-
-

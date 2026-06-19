@@ -29,5 +29,3 @@ data class ModelStatusDto(
     @SerialName("preprocess_version") val preprocessVersion: String? = null,
     @SerialName("dataset_fingerprint") val datasetFingerprint: String? = null,
 )
-
-

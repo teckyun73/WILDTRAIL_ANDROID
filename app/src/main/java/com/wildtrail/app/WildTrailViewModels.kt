@@ -18,8 +18,8 @@ data class WildTrailViewModels(
 )
 
 @Composable
-internal fun wildTrailViewModels(): WildTrailViewModels {
-    return WildTrailViewModels(
+internal fun wildTrailViewModels(): WildTrailViewModels =
+    WildTrailViewModels(
         settings = viewModel(),
         identify = viewModel(),
         records = viewModel(),
@@ -27,5 +27,3 @@ internal fun wildTrailViewModels(): WildTrailViewModels {
         species = viewModel(),
         trips = viewModel(),
     )
-}
-

@@ -36,7 +36,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Run JVM tests and assemble build artifacts
-        run: ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease --stacktrace
+        run: ./gradlew ktlintCheck testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease --stacktrace
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
@@ -76,4 +76,3 @@ jobs:
           path: app/build/reports/tests/testDebugUnitTest
           if-no-files-found: warn
           retention-days: 14
-

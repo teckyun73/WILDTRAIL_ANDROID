@@ -44,12 +44,13 @@ fun tripRouteStops(plan: TripPlanResponseDto): List<RouteStop> {
 
     val origin = plan.origin.trim()
     val destination = plan.hotspotName.trim()
-    val middleStops = plan.daysPlan
-        .flatMap { day -> day.items }
-        .map { it.location.trim() }
-        .filter { it.isNotBlank() && it != origin && it != destination }
-        .distinct()
-        .take(4)
+    val middleStops =
+        plan.daysPlan
+            .flatMap { day -> day.items }
+            .map { it.location.trim() }
+            .filter { it.isNotBlank() && it != origin && it != destination }
+            .distinct()
+            .take(4)
     return buildList {
         if (origin.isNotBlank()) add(RouteStop(name = origin, role = "출발"))
         middleStops.forEach { add(RouteStop(name = it, role = "경유")) }
@@ -60,7 +61,7 @@ fun tripRouteStops(plan: TripPlanResponseDto): List<RouteStop> {
                     role = "주요 관찰지",
                     latitude = plan.hotspotLatitude,
                     longitude = plan.hotspotLongitude,
-                )
+                ),
             )
         }
         if (size < 2 && destination.isNotBlank()) {
@@ -70,7 +71,7 @@ fun tripRouteStops(plan: TripPlanResponseDto): List<RouteStop> {
                     role = "주요 관찰지",
                     latitude = plan.hotspotLatitude,
                     longitude = plan.hotspotLongitude,
-                )
+                ),
             )
         }
     }.ifEmpty {
@@ -83,10 +84,11 @@ fun tripRouteStops(plan: TripPlanResponseDto): List<RouteStop> {
 
 fun routeSummary(stops: List<RouteStop>): RouteSummary {
     val coordinateStops = stops.filter { it.hasCoordinates }
-    val distanceKm = coordinateStops
-        .zipWithNext()
-        .sumOf { (from, to) -> distanceKm(from, to) }
-        .takeIf { coordinateStops.size >= 2 }
+    val distanceKm =
+        coordinateStops
+            .zipWithNext()
+            .sumOf { (from, to) -> distanceKm(from, to) }
+            .takeIf { coordinateStops.size >= 2 }
     return RouteSummary(
         stopCount = stops.size,
         coordinateStopCount = coordinateStops.size,
@@ -94,9 +96,7 @@ fun routeSummary(stops: List<RouteStop>): RouteSummary {
     )
 }
 
-fun formatRouteDistance(distanceKm: Double?): String {
-    return distanceKm?.let { "직선거리 %.1fkm".format(it) } ?: "좌표 거리 미정"
-}
+fun formatRouteDistance(distanceKm: Double?): String = distanceKm?.let { "직선거리 %.1fkm".format(it) } ?: "좌표 거리 미정"
 
 fun openRouteInMapApp(
     context: Context,
@@ -108,10 +108,11 @@ fun openRouteInMapApp(
         Toast.makeText(context, "경로를 열 장소 정보가 부족합니다.", Toast.LENGTH_SHORT).show()
         return
     }
-    val routeUri = buildRouteMapUri(stops) ?: run {
-        Toast.makeText(context, "경로를 열 장소 정보가 부족합니다.", Toast.LENGTH_SHORT).show()
-        return
-    }
+    val routeUri =
+        buildRouteMapUri(stops) ?: run {
+            Toast.makeText(context, "경로를 열 장소 정보가 부족합니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
     openMapUri(context, routeUri, "경로를 열 수 있는 지도 앱이 없습니다.")
 }
 
@@ -123,10 +124,11 @@ fun openPlaceInMapApp(
         Toast.makeText(context, "검색할 장소 정보가 없습니다.", Toast.LENGTH_SHORT).show()
         return
     }
-    val uri = buildPlaceMapUri(stop) ?: run {
-        Toast.makeText(context, "검색할 장소 정보가 없습니다.", Toast.LENGTH_SHORT).show()
-        return
-    }
+    val uri =
+        buildPlaceMapUri(stop) ?: run {
+            Toast.makeText(context, "검색할 장소 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
     openMapUri(
         context = context,
         uri = uri,
@@ -161,22 +163,20 @@ internal fun buildPlaceMapUri(stop: RouteStop?): String? {
     }
 }
 
-private fun normalizeRouteRole(role: String): String {
-    return when (role.trim().lowercase()) {
+private fun normalizeRouteRole(role: String): String =
+    when (role.trim().lowercase()) {
         "origin", "start", "departure", "출발" -> "출발"
         "destination", "hotspot", "target", "관찰지", "주요 관찰지" -> "주요 관찰지"
         "waypoint", "via", "stop", "경유" -> "경유"
         else -> role.ifBlank { "경유" }
     }
-}
 
-private fun mapDestination(stop: RouteStop): String {
-    return if (stop.hasCoordinates) {
+private fun mapDestination(stop: RouteStop): String =
+    if (stop.hasCoordinates) {
         "${stop.latitude},${stop.longitude}"
     } else {
         mapQuery(stop.name)
     }
-}
 
 private fun mapQuery(place: String): String {
     val trimmed = place.trim()
@@ -188,31 +188,37 @@ private fun mapQuery(place: String): String {
     }
 }
 
-private fun urlEncode(value: String): String {
-    return URLEncoder.encode(value, Charsets.UTF_8.name()).replace("+", "%20")
-}
+private fun urlEncode(value: String): String = URLEncoder.encode(value, Charsets.UTF_8.name()).replace("+", "%20")
 
-private fun distanceKm(from: RouteStop, to: RouteStop): Double {
+private fun distanceKm(
+    from: RouteStop,
+    to: RouteStop,
+): Double {
     val fromLatitude = Math.toRadians(from.latitude ?: return 0.0)
     val fromLongitude = Math.toRadians(from.longitude ?: return 0.0)
     val toLatitude = Math.toRadians(to.latitude ?: return 0.0)
     val toLongitude = Math.toRadians(to.longitude ?: return 0.0)
     val deltaLatitude = toLatitude - fromLatitude
     val deltaLongitude = toLongitude - fromLongitude
-    val a = sin(deltaLatitude / 2).pow(2.0) +
-        cos(fromLatitude) * cos(toLatitude) * sin(deltaLongitude / 2).pow(2.0)
+    val a =
+        sin(deltaLatitude / 2).pow(2.0) +
+            cos(fromLatitude) * cos(toLatitude) * sin(deltaLongitude / 2).pow(2.0)
     val c = 2 * atan2(sqrt(a), sqrt(1 - a))
     return 6371.0 * c
 }
 
-private fun openMapUri(context: Context, uri: String, failureMessage: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri)).apply {
-        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    }
+private fun openMapUri(
+    context: Context,
+    uri: String,
+    failureMessage: String,
+) {
+    val intent =
+        Intent(Intent.ACTION_VIEW, Uri.parse(uri)).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
     try {
         context.startActivity(intent)
     } catch (_: ActivityNotFoundException) {
         Toast.makeText(context, failureMessage, Toast.LENGTH_SHORT).show()
     }
 }
-

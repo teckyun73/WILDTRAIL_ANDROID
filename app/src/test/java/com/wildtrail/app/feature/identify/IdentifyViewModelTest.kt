@@ -1,9 +1,8 @@
 package com.wildtrail.app.feature.identify
 
-import com.wildtrail.app.test.MainDispatcherRule
-
 import com.wildtrail.app.data.dto.IdentificationCandidateDto
 import com.wildtrail.app.data.dto.IdentificationResultDto
+import com.wildtrail.app.test.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -35,71 +34,74 @@ class IdentifyViewModelTest {
     }
 
     @Test
-    fun identifyRecordedAudio_setsReadyStateAndCompletionMessageWhenRequestSucceeds() = runTest {
-        val expected = identificationResultFixture()
-        var receivedBaseUrl: String? = null
-        var receivedPartName: String? = null
-        var fallbackUrl: String? = null
-        val audioFile = createTempAudioFile()
-        val viewModel = IdentifyViewModel(
-            identifyAudioRequest = { baseUrl, onBaseUrlFallback, filePart ->
-                receivedBaseUrl = baseUrl
-                receivedPartName = filePart.headers?.get("Content-Disposition")
-                onBaseUrlFallback("http://127.0.0.1:8000")
-                expected
-            },
-        )
+    fun identifyRecordedAudio_setsReadyStateAndCompletionMessageWhenRequestSucceeds() =
+        runTest {
+            val expected = identificationResultFixture()
+            var receivedBaseUrl: String? = null
+            var receivedPartName: String? = null
+            var fallbackUrl: String? = null
+            val audioFile = createTempAudioFile()
+            val viewModel =
+                IdentifyViewModel(
+                    identifyAudioRequest = { baseUrl, onBaseUrlFallback, filePart ->
+                        receivedBaseUrl = baseUrl
+                        receivedPartName = filePart.headers?.get("Content-Disposition")
+                        onBaseUrlFallback("http://127.0.0.1:8000")
+                        expected
+                    },
+                )
 
-        viewModel.identifyRecordedAudio(audioFile, 2300, "http://10.0.2.2:8000") { fallbackUrl = it }
-        advanceUntilIdle()
+            viewModel.identifyRecordedAudio(audioFile, 2300, "http://10.0.2.2:8000") { fallbackUrl = it }
+            advanceUntilIdle()
 
-        val state = viewModel.identifyState as IdentifyUiState.Ready
-        assertSame(expected, state.result)
-        assertEquals("http://10.0.2.2:8000", receivedBaseUrl)
-        assertEquals("http://127.0.0.1:8000", fallbackUrl)
-        assertEquals(audioFile.name, viewModel.selectedAudioName)
-        assertNull(viewModel.selectedImageName)
-        assertEquals("녹음 파일 분석 완료", viewModel.recordingMessage)
-        assertEquals(true, receivedPartName?.contains("filename=\"${audioFile.name}\"") == true)
-    }
+            val state = viewModel.identifyState as IdentifyUiState.Ready
+            assertSame(expected, state.result)
+            assertEquals("http://10.0.2.2:8000", receivedBaseUrl)
+            assertEquals("http://127.0.0.1:8000", fallbackUrl)
+            assertEquals(audioFile.name, viewModel.selectedAudioName)
+            assertNull(viewModel.selectedImageName)
+            assertEquals("녹음 파일 분석 완료", viewModel.recordingMessage)
+            assertEquals(true, receivedPartName?.contains("filename=\"${audioFile.name}\"") == true)
+        }
 
     @Test
-    fun identifyRecordedAudio_setsErrorStateAndClearsRecordingMessageWhenRequestFails() = runTest {
-        val audioFile = createTempAudioFile()
-        val viewModel = IdentifyViewModel(
-            identifyAudioRequest = { _, _, _ -> throw ConnectException() },
-        )
+    fun identifyRecordedAudio_setsErrorStateAndClearsRecordingMessageWhenRequestFails() =
+        runTest {
+            val audioFile = createTempAudioFile()
+            val viewModel =
+                IdentifyViewModel(
+                    identifyAudioRequest = { _, _, _ -> throw ConnectException() },
+                )
 
-        viewModel.identifyRecordedAudio(audioFile, 1500, "http://10.0.2.2:8000") {}
-        advanceUntilIdle()
+            viewModel.identifyRecordedAudio(audioFile, 1500, "http://10.0.2.2:8000") {}
+            advanceUntilIdle()
 
-        val state = viewModel.identifyState as IdentifyUiState.Error
-        assertEquals("서버에 연결할 수 없습니다. 백엔드가 실행 중인지 확인해 주세요.", state.message)
-        assertEquals(audioFile.name, viewModel.selectedAudioName)
-        assertNull(viewModel.selectedImageName)
-        assertNull(viewModel.recordingMessage)
-    }
+            val state = viewModel.identifyState as IdentifyUiState.Error
+            assertEquals("서버에 연결할 수 없습니다. 백엔드가 실행 중인지 확인해 주세요.", state.message)
+            assertEquals(audioFile.name, viewModel.selectedAudioName)
+            assertNull(viewModel.selectedImageName)
+            assertNull(viewModel.recordingMessage)
+        }
 
-    private fun createTempAudioFile(): File {
-        return File.createTempFile("wildtrail-recording", ".m4a").apply {
+    private fun createTempAudioFile(): File =
+        File.createTempFile("wildtrail-recording", ".m4a").apply {
             writeBytes(byteArrayOf(0x00, 0x01, 0x02, 0x03))
             deleteOnExit()
         }
-    }
 
-    private fun identificationResultFixture() = IdentificationResultDto(
-        mediaType = "audio",
-        candidates = listOf(
-            IdentificationCandidateDto(
-                speciesId = "lynx",
-                commonName = "삵",
-                scientificName = "Prionailurus bengalensis",
-                confidence = 0.91,
-            ),
-        ),
-        message = "식별 완료",
-        source = "test",
-    )
+    private fun identificationResultFixture() =
+        IdentificationResultDto(
+            mediaType = "audio",
+            candidates =
+                listOf(
+                    IdentificationCandidateDto(
+                        speciesId = "lynx",
+                        commonName = "삵",
+                        scientificName = "Prionailurus bengalensis",
+                        confidence = 0.91,
+                    ),
+                ),
+            message = "식별 완료",
+            source = "test",
+        )
 }
-
-

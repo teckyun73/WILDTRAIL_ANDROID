@@ -15,9 +15,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -88,22 +88,25 @@ fun TripNativeMapScreen(
     var hasLocationPermission by remember { mutableStateOf(context.hasLocationPermission()) }
     var locationRequestCount by remember { mutableStateOf(0) }
     var locationPermissionMessage by remember { mutableStateOf<String?>(null) }
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        hasLocationPermission = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
-        locationPermissionMessage = if (hasLocationPermission) {
-            "현재 위치 표시가 활성화되었습니다."
-        } else {
-            "위치 권한을 허용하면 현재 위치를 지도에 함께 표시할 수 있습니다. Android 설정에서 위치 권한을 허용한 뒤 다시 시도해 주세요."
+    val locationPermissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions(),
+        ) { permissions ->
+            hasLocationPermission = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            locationPermissionMessage =
+                if (hasLocationPermission) {
+                    "현재 위치 표시가 활성화되었습니다."
+                } else {
+                    "위치 권한을 허용하면 현재 위치를 지도에 함께 표시할 수 있습니다. Android 설정에서 위치 권한을 허용한 뒤 다시 시도해 주세요."
+                }
         }
-    }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -137,9 +140,10 @@ fun TripNativeMapScreen(
             Surface(
                 shape = RoundedCornerShape(8.dp),
                 tonalElevation = 1.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
             ) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     if (BuildConfig.HAS_MAPS_API_KEY) {
@@ -166,14 +170,15 @@ fun TripNativeMapScreen(
                                     arrayOf(
                                         Manifest.permission.ACCESS_FINE_LOCATION,
                                         Manifest.permission.ACCESS_COARSE_LOCATION,
-                                    )
+                                    ),
                                 )
                             }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(12.dp),
+                        modifier =
+                            Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(12.dp),
                     ) {
                         Text("내 위치")
                     }
@@ -181,9 +186,10 @@ fun TripNativeMapScreen(
                         Surface(
                             shape = RoundedCornerShape(8.dp),
                             tonalElevation = 2.dp,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .padding(12.dp),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(12.dp),
                         ) {
                             Text(
                                 message,
@@ -193,7 +199,6 @@ fun TripNativeMapScreen(
                             )
                         }
                     }
-
                 }
             }
         }
@@ -208,25 +213,29 @@ fun TripNativeMapScreen(
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("동선 지점", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 Text(
-                    "${summary.coordinateStopCount}/${summary.stopCount}개 지점에 좌표가 있으며 ${formatRouteDistance(summary.straightLineDistanceKm)}입니다.",
+                    "${summary.coordinateStopCount}/${summary.stopCount}개 지점에 좌표가 있으며 ${formatRouteDistance(
+                        summary.straightLineDistanceKm,
+                    )}입니다.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 stops.forEachIndexed { index, stop ->
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable { selectedStop = stop }
-                            .padding(vertical = 4.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable { selectedStop = stop }
+                                .padding(vertical = 4.dp),
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Box(
-                            modifier = Modifier
-                                .size(26.dp)
-                                .clip(CircleShape)
-                                .background(routeStopColor(stop).copy(alpha = if (stop.hasCoordinates) 1f else 0.18f)),
+                            modifier =
+                                Modifier
+                                    .size(26.dp)
+                                    .clip(CircleShape)
+                                    .background(routeStopColor(stop).copy(alpha = if (stop.hasCoordinates) 1f else 0.18f)),
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
@@ -276,9 +285,10 @@ private fun RouteSummaryChip(text: String) {
 @Composable
 private fun MissingMapsKeyPanel(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
-            .background(Forest.copy(alpha = 0.08f))
-            .padding(16.dp),
+        modifier =
+            modifier
+                .background(Forest.copy(alpha = 0.08f))
+                .padding(16.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -288,6 +298,7 @@ private fun MissingMapsKeyPanel(modifier: Modifier = Modifier) {
         )
     }
 }
+
 @Composable
 private fun EmptyMapPanel() {
     Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
@@ -317,10 +328,11 @@ private fun RouteStopDetailPanel(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(34.dp)
-                        .clip(CircleShape)
-                        .background(routeStopColor(stop)),
+                    modifier =
+                        Modifier
+                            .size(34.dp)
+                            .clip(CircleShape)
+                            .background(routeStopColor(stop)),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -379,34 +391,38 @@ private fun NativeRouteMap(
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val mapView = remember {
-        MapView(context).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-            )
-            onCreate(null)
+    val mapView =
+        remember {
+            MapView(context).apply {
+                layoutParams =
+                    ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                    )
+                onCreate(null)
+            }
         }
-    }
 
     DisposableEffect(lifecycle, mapView) {
         var isDestroyed = false
+
         fun destroyMapView() {
             if (!isDestroyed) {
                 isDestroyed = true
                 mapView.onDestroy()
             }
         }
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_START -> mapView.onStart()
-                Lifecycle.Event.ON_RESUME -> mapView.onResume()
-                Lifecycle.Event.ON_PAUSE -> mapView.onPause()
-                Lifecycle.Event.ON_STOP -> mapView.onStop()
-                Lifecycle.Event.ON_DESTROY -> destroyMapView()
-                else -> Unit
+        val observer =
+            LifecycleEventObserver { _, event ->
+                when (event) {
+                    Lifecycle.Event.ON_START -> mapView.onStart()
+                    Lifecycle.Event.ON_RESUME -> mapView.onResume()
+                    Lifecycle.Event.ON_PAUSE -> mapView.onPause()
+                    Lifecycle.Event.ON_STOP -> mapView.onStop()
+                    Lifecycle.Event.ON_DESTROY -> destroyMapView()
+                    else -> Unit
+                }
             }
-        }
         lifecycle.addObserver(observer)
         onDispose {
             lifecycle.removeObserver(observer)
@@ -450,13 +466,14 @@ private fun renderRouteMap(
     selectedStop: RouteStop?,
     onStopSelected: (RouteStop) -> Unit,
 ) {
-    val mappedStops = routeStopMarkerData(stops).map { markerData ->
-        MappedRouteStop(
-            routeIndex = markerData.routeIndex,
-            stop = markerData.stop,
-            latLng = LatLng(markerData.latitude, markerData.longitude),
-        )
-    }
+    val mappedStops =
+        routeStopMarkerData(stops).map { markerData ->
+            MappedRouteStop(
+                routeIndex = markerData.routeIndex,
+                stop = markerData.stop,
+                latLng = LatLng(markerData.latitude, markerData.longitude),
+            )
+        }
     googleMap.clear()
     googleMap.uiSettings.isZoomControlsEnabled = true
     googleMap.uiSettings.isMapToolbarEnabled = true
@@ -466,13 +483,14 @@ private fun renderRouteMap(
     }
     val markerStops = mutableMapOf<Marker, RouteStop>()
     mappedStops.forEach { mappedStop ->
-        val marker = googleMap.addMarker(
-            MarkerOptions()
-                .position(mappedStop.latLng)
-                .title("${mappedStop.routeIndex + 1}. ${mappedStop.stop.name}")
-                .snippet(mappedStop.stop.role)
-                .icon(BitmapDescriptorFactory.defaultMarker(routeStopHue(mappedStop.stop)))
-        )
+        val marker =
+            googleMap.addMarker(
+                MarkerOptions()
+                    .position(mappedStop.latLng)
+                    .title("${mappedStop.routeIndex + 1}. ${mappedStop.stop.name}")
+                    .snippet(mappedStop.stop.role)
+                    .icon(BitmapDescriptorFactory.defaultMarker(routeStopHue(mappedStop.stop))),
+            )
         if (marker != null) {
             markerStops[marker] = mappedStop.stop
             if (mappedStop.stop == selectedStop) {
@@ -490,7 +508,7 @@ private fun renderRouteMap(
             PolylineOptions()
                 .addAll(mappedStops.map { it.latLng })
                 .color(0xFF215B43.toInt())
-                .width(8f)
+                .width(8f),
         )
         val boundsBuilder = LatLngBounds.Builder()
         mappedStops.forEach { boundsBuilder.include(it.latLng) }
@@ -502,38 +520,41 @@ private fun renderRouteMap(
     }
 }
 
-private fun Context.hasLocationPermission(): Boolean {
-    return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+private fun Context.hasLocationPermission(): Boolean =
+    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
         ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-}
 
 @SuppressLint("MissingPermission")
-private fun moveToLastKnownLocation(context: Context, googleMap: GoogleMap) {
+private fun moveToLastKnownLocation(
+    context: Context,
+    googleMap: GoogleMap,
+) {
     if (!context.hasLocationPermission()) return
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager ?: return
-    val location = locationManager.getProviders(true)
-        .mapNotNull { provider ->
-            try {
-                locationManager.getLastKnownLocation(provider)
-            } catch (_: SecurityException) {
-                null
-            }
-        }
-        .maxByOrNull(Location::getTime)
+    val location =
+        locationManager
+            .getProviders(true)
+            .mapNotNull { provider ->
+                try {
+                    locationManager.getLastKnownLocation(provider)
+                } catch (_: SecurityException) {
+                    null
+                }
+            }.maxByOrNull(Location::getTime)
     if (location != null) {
         googleMap.animateCamera(
             CameraUpdateFactory.newLatLngZoom(
                 LatLng(location.latitude, location.longitude),
                 15f,
-            )
+            ),
         )
     } else {
         Toast.makeText(context, "최근 위치를 아직 확인할 수 없습니다.", Toast.LENGTH_SHORT).show()
     }
 }
 
-internal fun routeStopMarkerData(stops: List<RouteStop>): List<RouteStopMarkerData> {
-    return stops.mapIndexedNotNull { index, stop ->
+internal fun routeStopMarkerData(stops: List<RouteStop>): List<RouteStopMarkerData> =
+    stops.mapIndexedNotNull { index, stop ->
         val latitude = stop.latitude
         val longitude = stop.longitude
         if (latitude != null && longitude != null) {
@@ -542,23 +563,19 @@ internal fun routeStopMarkerData(stops: List<RouteStop>): List<RouteStopMarkerDa
             null
         }
     }
-}
 
-internal fun routeStopColor(stop: RouteStop): Color {
-    return when {
+internal fun routeStopColor(stop: RouteStop): Color =
+    when {
         stop.role.contains("출발") -> Color(0xFF2563EB)
         stop.role.contains("경유") -> Color(0xFFF59E0B)
         stop.role.contains("관찰") -> Forest
         else -> Color(0xFF6B7280)
     }
-}
 
-internal fun routeStopHue(stop: RouteStop): Float {
-    return when {
+internal fun routeStopHue(stop: RouteStop): Float =
+    when {
         stop.role.contains("출발") -> BitmapDescriptorFactory.HUE_AZURE
         stop.role.contains("경유") -> BitmapDescriptorFactory.HUE_ORANGE
         stop.role.contains("관찰") -> BitmapDescriptorFactory.HUE_GREEN
         else -> BitmapDescriptorFactory.HUE_RED
     }
-}
-

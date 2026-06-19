@@ -23,7 +23,7 @@ fun OfflineErrorPanel(
     title: String,
     message: String,
     modifier: Modifier = Modifier,
-    guidance: String = defaultOfflineGuidance,
+    guidance: String = DEFAULT_OFFLINE_GUIDANCE,
     actionLabel: String? = null,
     onAction: (() -> Unit)? = null,
     actionTestTag: String? = null,
@@ -55,9 +55,10 @@ fun OfflineErrorPanel(
                     onClick = onAction,
                     enabled = isActionEnabled,
                     colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .then(if (actionTestTag != null) Modifier.testTag(actionTestTag) else Modifier),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .then(if (actionTestTag != null) Modifier.testTag(actionTestTag) else Modifier),
                 ) {
                     Text(actionLabel)
                 }
@@ -66,4 +67,6 @@ fun OfflineErrorPanel(
     }
 }
 
-private const val defaultOfflineGuidance = "API 서버 주소와 네트워크 연결을 확인한 뒤 다시 시도하세요. 에뮬레이터는 10.0.2.2, ADB reverse는 127.0.0.1, 실기기는 PC LAN IP를 사용합니다."
+private const val DEFAULT_OFFLINE_GUIDANCE =
+    "API 서버 주소와 네트워크 연결을 확인한 뒤 다시 시도하세요. " +
+        "에뮬레이터는 10.0.2.2, ADB reverse는 127.0.0.1, 실기기는 PC LAN IP를 사용합니다."
