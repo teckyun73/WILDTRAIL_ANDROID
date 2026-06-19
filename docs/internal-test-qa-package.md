@@ -28,12 +28,18 @@ Fill this table before uploading the build.
 .\gradlew.bat ktlintCheck testDebugUnitTest assembleRelease bundleRelease '-PVERSION_CODE=2' '-PVERSION_NAME=0.1.1' --stacktrace
 ```
 
-3. Confirm the signed bundle exists at `app/build/outputs/bundle/release/app-release.aab`.
-4. Run `docs/manual-qa-checklist.md` on at least one emulator.
-5. Run one physical-device smoke pass when a device is available.
-6. Upload the signed AAB to Google Play internal testing.
-7. Add release notes using the template below.
-8. Send the tester instructions below with the internal testing opt-in link.
+3. Verify the release candidate artifacts and checksums:
+
+```powershell
+.\scripts\verify-release-candidate.ps1 -VersionCode 2 -VersionName 0.1.1 -RequireSigned
+```
+
+4. Confirm the signed bundle exists at `app/build/outputs/bundle/release/app-release.aab`.
+5. Run `docs/manual-qa-checklist.md` on at least one emulator.
+6. Run one physical-device smoke pass when a device is available.
+7. Upload the signed AAB to Google Play internal testing.
+8. Add release notes using the template below.
+9. Send the tester instructions below with the internal testing opt-in link.
 
 ## Screenshot Capture Checklist
 
@@ -79,6 +85,8 @@ Build metadata:
 - Commit: {COMMIT_SHA}
 - CI: {CI_RUN_URL}
 - Backend: {BACKEND_ENVIRONMENT}
+- APK SHA-256: {APK_SHA256}
+- AAB SHA-256: {AAB_SHA256}
 ```
 
 ## Tester Message Template

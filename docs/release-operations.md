@@ -55,10 +55,22 @@ Artifacts are retained for 14 days. Treat the release APK as unsigned verificati
 2. Build with explicit version properties:
 
 ```powershell
-.\gradlew.bat assembleRelease bundleRelease '-PVERSION_CODE=2' '-PVERSION_NAME=0.1.1'
+.\gradlew.bat ktlintCheck testDebugUnitTest assembleRelease bundleRelease '-PVERSION_CODE=2' '-PVERSION_NAME=0.1.1' --stacktrace
 ```
 
-3. Confirm these files exist:
+3. Verify release candidate artifacts and checksums:
+
+```powershell
+.\scripts\verify-release-candidate.ps1 -VersionCode 2 -VersionName 0.1.1
+```
+
+For Play upload builds, require signed artifacts:
+
+```powershell
+.\scripts\verify-release-candidate.ps1 -VersionCode 2 -VersionName 0.1.1 -RequireSigned
+```
+
+4. Confirm these files exist:
 
 ```text
 app/build/outputs/apk/release/app-release-unsigned.apk  # no signing values
@@ -66,18 +78,18 @@ app/build/outputs/apk/release/app-release.apk           # signing values present
 app/build/outputs/bundle/release/app-release.aab
 ```
 
-4. Run the manual QA checklist in `docs/manual-qa-checklist.md`.
-5. Confirm API environment values and `MAPS_API_KEY` state are correct for the target build.
-6. Confirm release signing values from `docs/release-signing.md` are present for Play upload builds.
-7. Review `docs/privacy-and-permissions.md` and confirm Play Data safety answers still match the build.
-8. Record the commit SHA, CI run URL, artifact names, and QA notes in the release notes.
+5. Run the manual QA checklist in `docs/manual-qa-checklist.md`.
+6. Confirm API environment values and `MAPS_API_KEY` state are correct for the target build.
+7. Confirm release signing values from `docs/release-signing.md` are present for Play upload builds.
+8. Review `docs/privacy-and-permissions.md` and confirm Play Data safety answers still match the build.
+9. Record the commit SHA, CI run URL, artifact names, checksums, and QA notes in the release notes.
 
 ## Current Quality Gates
 
 - JVM unit tests cover network utilities, retry/fallback behavior, ViewModel state transitions, route generation, route summaries, and map helper logic.
 - Compose UI tests cover app startup, primary navigation, status environment presets, seeded species/trips/map flows, and the common offline error panel.
 - Manual QA covers media picking, audio recording, records save/list, backend health, species/hotspots, trips, native maps, external map handoff, and permission guidance.
-- Release review includes app icon/splash resources, privacy and permission notes, and Play internal testing preparation in `docs/play-internal-testing.md`.
+- Release review includes app icon/splash resources, privacy and permission notes, release candidate artifact verification, and Play internal testing preparation in `docs/play-internal-testing.md`.
 
 ## Configuration Notes
 

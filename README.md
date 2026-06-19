@@ -161,7 +161,7 @@ app/build/outputs/apk/release/app-release.apk           # signing values present
 app/build/outputs/bundle/release/app-release.aab
 ```
 
-The release APK/AAB is unsigned unless release signing values are supplied through private local properties, Gradle properties, or environment variables. Follow [docs/release-signing.md](docs/release-signing.md) before uploading an internal test build to Play.
+The release APK/AAB is unsigned unless release signing values are supplied through private local properties, Gradle properties, or environment variables. Follow [docs/release-signing.md](docs/release-signing.md) before uploading an internal test build to Play, then verify RC artifacts with `./scripts/verify-release-candidate.ps1`.
 
 ## Repository Operations
 
