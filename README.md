@@ -147,7 +147,7 @@ versionCode = 1
 versionName = 0.1.0
 ```
 
-CI release artifact versions are set once in `.github/workflows/android-ci.yml` through `VERSION_CODE` and `VERSION_NAME`. Override them locally for release candidates with Gradle properties:
+CI release artifact versions are set once in `.github/workflows/android-ci.yml` through `VERSION_CODE` and `VERSION_NAME`; update them with `./scripts/set-release-version.ps1`. Override them locally for release candidates with Gradle properties:
 
 ```powershell
 .\gradlew.bat assembleRelease bundleRelease '-PVERSION_CODE=2' '-PVERSION_NAME=0.1.1'

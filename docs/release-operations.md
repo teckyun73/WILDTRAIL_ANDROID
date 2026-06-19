@@ -52,7 +52,11 @@ Artifacts are retained for 14 days. `wildtrail-release-candidate-report` contain
 
 ## CI Release Version Inputs
 
-CI release artifact versions are controlled by `VERSION_CODE` and `VERSION_NAME` in `.github/workflows/android-ci.yml`. Update those values in the same change as an RC version bump so Gradle and `scripts/verify-release-candidate.ps1` validate the same version metadata.
+CI release artifact versions are controlled by `VERSION_CODE` and `VERSION_NAME` in `.github/workflows/android-ci.yml`. Use the version bump helper so Gradle and `scripts/verify-release-candidate.ps1` validate the same version metadata:
+
+```powershell
+.\scripts\set-release-version.ps1 -VersionCode 2 -VersionName 0.1.1
+```
 
 ## Release Candidate Checklist
 
