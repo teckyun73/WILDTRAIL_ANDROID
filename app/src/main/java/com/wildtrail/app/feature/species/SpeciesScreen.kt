@@ -78,7 +78,9 @@ fun SpeciesScreen(
             onValueChange = onSearchChange,
             singleLine = true,
             label = { Text("종 이름 검색") },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("species-search-field"),
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -296,7 +298,9 @@ private fun SpeciesDetailContent(
             Button(
                 onClick = { onPlanTripForSpecies(detail.id) },
                 colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("species-plan-trip-button"),
             ) {
                 Text("이 종으로 여행 계획")
             }
@@ -481,7 +485,4 @@ private fun SpeciesMetadataChip(text: String) {
         )
     }
 }
-
-
-
 
