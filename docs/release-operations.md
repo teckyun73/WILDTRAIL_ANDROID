@@ -89,9 +89,10 @@ app/build/outputs/bundle/release/app-release.aab
 
 5. Run the manual QA checklist in `docs/manual-qa-checklist.md`.
 6. Confirm API environment values and `MAPS_API_KEY` state are correct for the target build.
-7. Confirm release signing values from `docs/release-signing.md` are present for Play upload builds.
-8. Review `docs/privacy-and-permissions.md` and confirm Play Data safety answers still match the build.
-9. Record the commit SHA, CI run URL, artifact names, checksums, and QA notes in the release notes.
+7. Run the temporary signed rehearsal from `docs/release-signing.md` before using the real upload key when signing changes.
+8. Confirm release signing values from `docs/release-signing.md` are present for Play upload builds.
+9. Review `docs/privacy-and-permissions.md` and confirm Play Data safety answers still match the build.
+10. Record the commit SHA, CI run URL, artifact names, checksums, and QA notes in the release notes.
 
 ## Current Quality Gates
 

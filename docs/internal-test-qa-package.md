@@ -21,7 +21,7 @@ Fill this table before uploading the build. For CI-generated artifacts, set or c
 
 ## Build And Upload Checklist
 
-1. Confirm `docs/release-signing.md` values are configured outside the repository.
+1. Run `scripts/rehearse-signed-release.ps1` when signing setup changed, then confirm `docs/release-signing.md` values are configured outside the repository.
 2. Build the release candidate:
 
 ```powershell

@@ -33,6 +33,16 @@ $keytool = "C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe"
 
 Back up the keystore and passwords in the team's password manager before uploading an internal test build. If Google Play App Signing is enabled, this is the upload key, not the app signing key that Google uses for store delivery.
 
+## Signed Rehearsal Without The Upload Key
+
+Before using the private upload key, run a signed release rehearsal with a temporary PKCS12 key. The script creates a short-lived key in the temp directory, builds signed release artifacts, runs `scripts/verify-release-candidate.ps1 -RequireSigned`, and deletes the temporary key in a cleanup step.
+
+```powershell
+.\scripts\rehearse-signed-release.ps1 -VersionCode 2 -VersionName 0.1.1
+```
+
+This rehearsal proves that Gradle signing configuration, APK/AAB generation, and signed artifact verification are wired correctly. It does not produce Play-uploadable artifacts because the temporary key is not the real upload key.
+
 ## Build Signed Release Artifacts Locally
 
 After adding the private values to `local.properties`, build with explicit version properties:
