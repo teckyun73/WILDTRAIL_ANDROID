@@ -4,7 +4,7 @@ Use this package for each Google Play internal testing candidate. It ties the si
 
 ## Release Candidate Record
 
-Fill this table before uploading the build.
+Fill this table before uploading the build. For CI-generated artifacts, copy `VERSION_CODE` and `VERSION_NAME` from `.github/workflows/android-ci.yml`.
 
 | Field | Value |
 | --- | --- |

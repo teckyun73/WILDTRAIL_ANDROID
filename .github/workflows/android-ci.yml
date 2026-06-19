@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+env:
+  VERSION_CODE: '1'
+  VERSION_NAME: '0.1.0'
+
 concurrency:
   group: android-ci-${{ github.ref }}
   cancel-in-progress: true
@@ -40,7 +44,7 @@ jobs:
 
       - name: Verify release candidate artifacts
         shell: pwsh
-        run: ./scripts/verify-release-candidate.ps1 -VersionCode 1 -VersionName 0.1.0
+        run: ./scripts/verify-release-candidate.ps1 -VersionCode $env:VERSION_CODE -VersionName $env:VERSION_NAME
 
       - name: Upload release candidate verification report
         uses: actions/upload-artifact@v4

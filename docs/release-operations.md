@@ -50,6 +50,10 @@ No output from the final `logcat` filter means no recent fatal app crash was det
 
 Artifacts are retained for 14 days. `wildtrail-release-candidate-report` contains the JSON output from `scripts/verify-release-candidate.ps1`, including version metadata and SHA-256 checksums. Treat the release APK as unsigned verification output unless signing is explicitly configured through private local or CI secrets. Release signing setup is documented in `docs/release-signing.md`.
 
+## CI Release Version Inputs
+
+CI release artifact versions are controlled by `VERSION_CODE` and `VERSION_NAME` in `.github/workflows/android-ci.yml`. Update those values in the same change as an RC version bump so Gradle and `scripts/verify-release-candidate.ps1` validate the same version metadata.
+
 ## Release Candidate Checklist
 
 1. Decide the release version.
