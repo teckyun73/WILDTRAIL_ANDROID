@@ -18,7 +18,8 @@ Use this checklist when preparing the first Google Play internal testing track f
 - App name: `WildTrail`.
 - Short description: wildlife identification, observation records, and trip planning for field exploration.
 - Confirm screenshots from the current app build for identify, species, records, trips, and native map screens.
-- Use the privacy and permission notes in `docs/privacy-and-permissions.md` for the Data safety form.
+- Use the store-listing draft in `docs/store-listing.md` for app copy and screenshots.
+- Use `docs/privacy-and-permissions.md` and `docs/privacy-policy-draft.md` for Data safety and privacy-policy preparation.
 
 ## Internal Track Steps
 

@@ -40,4 +40,5 @@ Before an internal test build:
 3. Verify the identify screen clearly communicates image/audio upload actions.
 4. Verify location permission prompts appear only inside map/location flows.
 5. Update the Google Play Data safety form to match the data types and purposes above.
-6. Attach or link this notice from release notes when the permission set changes.
+6. Review `docs/privacy-policy-draft.md` and publish a final policy URL before public distribution.
+7. Attach or link this notice from release notes when the permission set changes.
