@@ -21,6 +21,8 @@ Fill this table before uploading the build. For CI-generated artifacts, set or c
 
 ## Build And Upload Checklist
 
+Before upload, complete the go/no-go gate in `docs/play-upload-readiness.md`.
+
 1. Run `scripts/rehearse-signed-release.ps1` when signing setup changed, then confirm `docs/release-signing.md` values are configured outside the repository.
 2. Build the release candidate:
 
