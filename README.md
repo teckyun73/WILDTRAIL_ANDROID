@@ -165,7 +165,7 @@ The release APK/AAB is unsigned unless release signing values are supplied throu
 
 ## Repository Operations
 
-Use the pull request and issue templates under `.github/` for scoped changes and bug reports. Release candidate and merge-gate guidance lives in [docs/release-operations.md](docs/release-operations.md), hands-on emulator validation lives in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), privacy and permission review lives in [docs/privacy-and-permissions.md](docs/privacy-and-permissions.md), the privacy policy draft lives in [docs/privacy-policy-draft.md](docs/privacy-policy-draft.md), release signing lives in [docs/release-signing.md](docs/release-signing.md), store listing copy lives in [docs/store-listing.md](docs/store-listing.md), and Play internal testing preparation lives in [docs/play-internal-testing.md](docs/play-internal-testing.md).
+Use the pull request and issue templates under `.github/` for scoped changes and bug reports. Release candidate and merge-gate guidance lives in [docs/release-operations.md](docs/release-operations.md), hands-on emulator validation lives in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), privacy and permission review lives in [docs/privacy-and-permissions.md](docs/privacy-and-permissions.md), the privacy policy draft lives in [docs/privacy-policy-draft.md](docs/privacy-policy-draft.md), release signing lives in [docs/release-signing.md](docs/release-signing.md), store listing copy lives in [docs/store-listing.md](docs/store-listing.md), internal test QA packaging lives in [docs/internal-test-qa-package.md](docs/internal-test-qa-package.md), and Play internal testing preparation lives in [docs/play-internal-testing.md](docs/play-internal-testing.md).
 
 ## Quality Checks
 

@@ -42,7 +42,7 @@ Initial internal testing build for WildTrail Android.
 
 ## Screenshot Plan
 
-Capture screenshots from the same signed release candidate when possible. Avoid showing private API URLs, debug-only values, or personal location details.
+Capture screenshots from the same signed release candidate when possible. Avoid showing private API URLs, debug-only values, or personal location details. Use `docs/internal-test-qa-package.md` for the executable screenshot capture checklist.
 
 | Slot | Screen | Purpose | Required State |
 | --- | --- | --- | --- |
