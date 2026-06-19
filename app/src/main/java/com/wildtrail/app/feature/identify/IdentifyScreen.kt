@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -246,7 +247,9 @@ private fun IdentificationResultPanel(
                 Button(
                     onClick = { onSaveCandidate(result.candidates.first(), result.mediaType) },
                     colors = ButtonDefaults.buttonColors(containerColor = Forest),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("identify-save-top-candidate-button"),
                 ) {
                     Text("상위 후보 기록 저장")
                 }
@@ -271,6 +274,7 @@ private fun IdentificationCandidateRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onCandidateSelected(candidate.speciesId) }
+            .testTag("identify-candidate-${candidate.speciesId}")
             .padding(vertical = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -329,7 +333,4 @@ private fun confidenceColor(confidence: Double): Color {
         else -> Color(0xFFB3261E)
     }
 }
-
-
-
 
