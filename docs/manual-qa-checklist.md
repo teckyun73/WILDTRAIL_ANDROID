@@ -5,7 +5,8 @@ Use this checklist after `testDebugUnitTest` and `assembleDebug` pass. Run it on
 ## Preflight
 
 - [ ] FastAPI backend is running on the PC at port `8000`.
-- [ ] Emulator can reach the backend through `http://10.0.2.2:8000` or `adb reverse tcp:8000 tcp:8000` plus `http://127.0.0.1:8000`.
+- [ ] Emulator can reach the backend through `http://10.0.2.2:8000`.
+- [ ] Physical USB demo can reach the backend through `adb reverse tcp:8000 tcp:8000` plus the in-app `ADB reverse` preset, as documented in [usb-adb-reverse-backend.md](usb-adb-reverse-backend.md).
 - [ ] Debug APK installs successfully with `adb install -r app\build\outputs\apk\debug\app-debug.apk`.
 - [ ] App launches without a fatal crash in recent `logcat` output.
 - [ ] If native map tiles are being verified, `MAPS_API_KEY` is set in `local.properties`.

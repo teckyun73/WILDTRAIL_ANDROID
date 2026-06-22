@@ -54,6 +54,14 @@ For a physical Android device on the same Wi-Fi network, use the PC LAN IP inste
 http://<PC_LAN_IP>:8000
 ```
 
+For a physical Android device connected by USB, use `adb reverse tcp:8000 tcp:8000` and set the in-app API URL to:
+
+```text
+http://127.0.0.1:8000
+```
+
+See [docs/usb-adb-reverse-backend.md](docs/usb-adb-reverse-backend.md) for the repeatable demo procedure.
+
 The status screen also includes API environment presets for build default, emulator local backend, ADB reverse, physical-device LAN, staging, and production. Configure build defaults in `local.properties` or Gradle properties:
 
 ```properties
@@ -174,7 +182,7 @@ The release APK/AAB is unsigned unless release signing values are supplied throu
 
 ## Repository Operations
 
-Use the pull request and issue templates under `.github/` for scoped changes and bug reports. Release candidate and merge-gate guidance lives in [docs/release-operations.md](docs/release-operations.md), hands-on emulator validation lives in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), privacy and permission review lives in [docs/privacy-and-permissions.md](docs/privacy-and-permissions.md), the privacy policy draft lives in [docs/privacy-policy-draft.md](docs/privacy-policy-draft.md), release signing lives in [docs/release-signing.md](docs/release-signing.md), store listing copy lives in [docs/store-listing.md](docs/store-listing.md), internal test QA packaging lives in [docs/internal-test-qa-package.md](docs/internal-test-qa-package.md), Play upload readiness lives in [docs/play-upload-readiness.md](docs/play-upload-readiness.md), release candidate records live under [docs/release-candidates](docs/release-candidates), and Play internal testing preparation lives in [docs/play-internal-testing.md](docs/play-internal-testing.md).
+Use the pull request and issue templates under `.github/` for scoped changes and bug reports. Release candidate and merge-gate guidance lives in [docs/release-operations.md](docs/release-operations.md), hands-on emulator validation lives in [docs/manual-qa-checklist.md](docs/manual-qa-checklist.md), physical-device USB backend setup lives in [docs/usb-adb-reverse-backend.md](docs/usb-adb-reverse-backend.md), privacy and permission review lives in [docs/privacy-and-permissions.md](docs/privacy-and-permissions.md), the privacy policy draft lives in [docs/privacy-policy-draft.md](docs/privacy-policy-draft.md), release signing lives in [docs/release-signing.md](docs/release-signing.md), store listing copy lives in [docs/store-listing.md](docs/store-listing.md), internal test QA packaging lives in [docs/internal-test-qa-package.md](docs/internal-test-qa-package.md), Play upload readiness lives in [docs/play-upload-readiness.md](docs/play-upload-readiness.md), release candidate records live under [docs/release-candidates](docs/release-candidates), and Play internal testing preparation lives in [docs/play-internal-testing.md](docs/play-internal-testing.md).
 
 ## Quality Checks
 
