@@ -2,6 +2,7 @@ package com.wildtrail.app
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import com.wildtrail.app.feature.home.HomeScreen
 import com.wildtrail.app.feature.identify.IdentifyRoute
 import com.wildtrail.app.feature.records.RecordsRoute
 import com.wildtrail.app.feature.species.SpeciesRoute
@@ -19,6 +20,14 @@ internal fun WildTrailTabContent(
     onTabSelected: (AppTab) -> Unit,
 ) {
     when (selectedTab) {
+        AppTab.Home ->
+            HomeScreen(
+                onOpenIdentify = { onTabSelected(AppTab.Identify) },
+                onOpenSpecies = { onTabSelected(AppTab.Species) },
+                onOpenMap = { onTabSelected(AppTab.Trips) },
+                onOpenTrips = { onTabSelected(AppTab.Trips) },
+                onOpenRecords = { onTabSelected(AppTab.Records) },
+            )
         AppTab.Identify ->
             IdentifyRoute(
                 context = context,

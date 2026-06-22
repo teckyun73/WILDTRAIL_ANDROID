@@ -16,6 +16,7 @@ internal enum class AppTab(
     val marker: String,
     val subtitle: String,
 ) {
+    Home("홈", "HM", "WildTrail home"),
     Identify("식별", "ID", "Image identification"),
     Status("상태", "ST", "Backend readiness"),
     Species("도감", "SP", "Species encyclopedia"),

@@ -23,7 +23,7 @@ fun WildTrailApp() {
 fun WildTrailAppContent(viewModels: WildTrailViewModels) {
     val settingsViewModel = viewModels.settings
     val identifyViewModel = viewModels.identify
-    var selectedTab by rememberSaveable { mutableStateOf(AppTab.Identify) }
+    var selectedTab by rememberSaveable { mutableStateOf(AppTab.Home) }
     val context = LocalContext.current
     val recordingSessionState =
         rememberRecordingSessionState(
@@ -39,12 +39,18 @@ fun WildTrailAppContent(viewModels: WildTrailViewModels) {
     )
 
     Scaffold(
-        topBar = { WildTrailTopBar(selectedTab) },
+        topBar = {
+            if (selectedTab != AppTab.Home) {
+                WildTrailTopBar(selectedTab)
+            }
+        },
         bottomBar = {
-            WildTrailBottomBar(
-                selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it },
-            )
+            if (selectedTab != AppTab.Home) {
+                WildTrailBottomBar(
+                    selectedTab = selectedTab,
+                    onTabSelected = { selectedTab = it },
+                )
+            }
         },
         containerColor = MaterialTheme.colorScheme.background,
     ) { padding ->

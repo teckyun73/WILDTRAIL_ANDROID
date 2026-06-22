@@ -19,14 +19,26 @@ class WildTrailAppSmokeTest {
     val composeRule = createAndroidComposeRule<MainActivity>()
 
     @Test
-    fun appStartsOnIdentifyTab() {
+    fun appStartsOnHomeScreen() {
         composeRule.onNodeWithText("WildTrail").assertIsDisplayed()
+        composeRule.onNodeWithTag("home-action-식별").assertIsDisplayed()
+        composeRule.onNodeWithTag("home-action-도감").assertIsDisplayed()
+        composeRule.onNodeWithTag("home-action-지도").assertIsDisplayed()
+        composeRule.onNodeWithTag("home-action-여행").assertIsDisplayed()
+        composeRule.onNodeWithTag("home-action-기록").assertIsDisplayed()
+    }
+
+    @Test
+    fun homeIdentifyActionOpensIdentifyTab() {
+        openHomeAction("식별")
         composeRule.onNodeWithText("사진 식별").assertIsDisplayed()
         composeRule.onNodeWithText("이미지 고르기").assertIsDisplayed()
     }
 
     @Test
     fun bottomNavigationOpensPrimaryTabs() {
+        openHomeAction("식별")
+
         selectTab("상태")
         composeRule.onNodeWithText("API 서버").assertIsDisplayed()
 
@@ -42,6 +54,7 @@ class WildTrailAppSmokeTest {
 
     @Test
     fun statusTabAllowsApiUrlEditingAndShowsHealthCheckAction() {
+        openHomeAction("식별")
         selectTab("상태")
         composeRule.onNodeWithText("API 서버").assertIsDisplayed()
         composeRule.onNodeWithText("Base URL").assertIsDisplayed()
@@ -55,6 +68,7 @@ class WildTrailAppSmokeTest {
 
     @Test
     fun statusTabSwitchesApiEnvironmentPresets() {
+        openHomeAction("식별")
         selectTab("상태")
 
         composeRule.onNodeWithTag("status-api-preset-adb-reverse").performClick()
@@ -67,14 +81,14 @@ class WildTrailAppSmokeTest {
 
     @Test
     fun recordsTabShowsObservationRecordContext() {
-        selectTab("기록")
+        openHomeAction("기록")
         composeRule.onNodeWithText("관찰 기록").assertIsDisplayed()
         composeRule.onNodeWithText("식별 결과로 저장한 관찰 기록을 시간순으로 확인합니다.").assertIsDisplayed()
     }
 
     @Test
     fun tripsTabAllowsEditingPlanningFields() {
-        selectTab("여행")
+        openHomeAction("여행")
         composeRule.onNodeWithText("여행 플래너").assertIsDisplayed()
         composeRule.onNodeWithText("계획 조건").assertIsDisplayed()
 
@@ -103,5 +117,9 @@ class WildTrailAppSmokeTest {
 
     private fun selectTab(label: String) {
         composeRule.onNode(hasText(label) and hasClickAction()).performClick()
+    }
+
+    private fun openHomeAction(label: String) {
+        composeRule.onNodeWithTag("home-action-$label").performClick()
     }
 }
