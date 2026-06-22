@@ -8,7 +8,8 @@ This folder contains the first native Android implementation of WildTrail.
 
 - Kotlin Android project
 - Jetpack Compose app shell
-- Bottom navigation with `식별`, `상태`, `도감`, `기록`, and `여행` tabs
+- Immersive WildTrail home screen with illustrated nature background and sector icons for `식별`, `도감`, `지도`, `여행`, and `기록`
+- Bottom navigation with `식별`, `상태`, `도감`, `기록`, and `여행` tabs after entering a feature area
 - Retrofit API client
 - `/health` backend connectivity check
 - `GET /api/v1/species` species list integration
@@ -98,6 +99,14 @@ org.gradle.java.home=C:/Program Files/Android/Android Studio/jbr
 Do not commit `org.gradle.java.home` to the project `gradle.properties`; it breaks Linux CI runners.
 
 ## Current Screens
+
+### 홈
+
+- Opens first when the app starts
+- Shows the WildTrail brand over an illustrated mountain and forest background
+- Provides large sector cards for `식별`, `도감`, `지도`, `여행`, and `기록`
+- Tapping `식별`, `도감`, `여행`, or `기록` opens the matching app section
+- Tapping `지도` opens the current native map/trip route flow
 
 ### 식별
 
@@ -212,7 +221,7 @@ No output from the final logcat filter means no recent fatal app crash was detec
 - Trip route stop generation and Google Maps / `geo:` URI construction
 - Native map marker filtering, color mapping, and marker hue mapping
 - ktlint Kotlin style checks in local and CI verification
-- Compose UI smoke checks for app startup, primary bottom navigation tabs, status URL editing and environment presets, records context, identify result save actions, species search/detail/hotspot handoff, species error retry and empty-result states, trip error retry, species chooser refresh/error handling, unmatched species guidance, and trip numeric input wiring
+- Compose UI smoke checks for home startup, home sector navigation, primary bottom navigation tabs, status URL editing and environment presets, records context, identify result save actions, species search/detail/hotspot handoff, species error retry and empty-result states, trip error retry, species chooser refresh/error handling, unmatched species guidance, and trip numeric input wiring
 
 ## Next Implementation Unit
 
