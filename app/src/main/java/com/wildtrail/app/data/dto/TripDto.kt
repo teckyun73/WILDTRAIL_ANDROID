@@ -56,6 +56,26 @@ data class TripRouteStopDto(
 )
 
 @Serializable
+data class AccommodationOptionDto(
+    val name: String,
+    val type: String,
+    val region: String = "",
+    val address: String = "",
+    @SerialName("distance_km") val distanceKm: Double? = null,
+    @SerialName("price_min_krw") val priceMinKrw: Int? = null,
+    @SerialName("price_max_krw") val priceMaxKrw: Int? = null,
+    @SerialName("price_per_night_krw") val pricePerNightKrw: Int? = null,
+    @SerialName("parking_available") val parkingAvailable: Boolean? = null,
+    val phone: String = "",
+    @SerialName("booking_url") val bookingUrl: String = "",
+    val source: String = "",
+    val note: String = "",
+    val rating: Double? = null,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
+)
+
+@Serializable
 data class TripPlanResponseDto(
     @SerialName("species_id") val speciesId: String,
     @SerialName("species_name") val speciesName: String,
@@ -69,6 +89,7 @@ data class TripPlanResponseDto(
     val summary: String,
     val checklist: List<String>,
     @SerialName("route_stops") val routeStops: List<TripRouteStopDto> = emptyList(),
+    @SerialName("accommodation_options") val accommodationOptions: List<AccommodationOptionDto> = emptyList(),
     @SerialName("days_plan") val daysPlan: List<TripDayPlanDto>,
     val costs: CostBreakdownDto,
     val disclaimer: String,

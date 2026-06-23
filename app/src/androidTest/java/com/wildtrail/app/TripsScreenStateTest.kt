@@ -13,6 +13,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
+import com.wildtrail.app.data.dto.AccommodationOptionDto
 import com.wildtrail.app.data.dto.CostBreakdownDto
 import com.wildtrail.app.data.dto.SpeciesSummaryDto
 import com.wildtrail.app.data.dto.TripDayItemDto
@@ -306,6 +307,49 @@ class TripsScreenStateTest {
         assertTextExists("12,000원")
     }
 
+    @Test
+    fun tripPlanShowsAccommodationOptions() {
+        composeRule.setContent {
+            WildTrailTheme {
+                TripsScreen(
+                    nativeMapPlan = null,
+                    onCloseNativeMap = {},
+                    speciesId = "lynx",
+                    onSpeciesIdChange = {},
+                    speciesState = SpeciesUiState.Ready(listOf(speciesFixture())),
+                    onSelectSpecies = {},
+                    onRefreshSpecies = {},
+                    origin = "서울역",
+                    onOriginChange = {},
+                    days = "2",
+                    onDaysChange = {},
+                    budget = "150000",
+                    onBudgetChange = {},
+                    travelers = "2",
+                    onTravelersChange = {},
+                    month = "5",
+                    onMonthChange = {},
+                    transport = "public",
+                    onTransportChange = {},
+                    accommodation = "guesthouse",
+                    onAccommodationChange = {},
+                    difficulty = "easy",
+                    onDifficultyChange = {},
+                    tripState = TripUiState.Ready(tripPlanFixture()),
+                    onPlanTrip = {},
+                    onOpenNativeMap = {},
+                    isLoading = false,
+                )
+            }
+        }
+
+        composeRule.onNodeWithText("주변 숙박").performScrollTo().assertIsDisplayed()
+        assertTextExists("DMZ 게스트하우스")
+        assertTextExists("50,000원 ~ 70,000원")
+        assertTextExists("가능")
+        assertTextExists("033-000-0000")
+    }
+
     private fun assertTextExists(text: String) {
         val nodes = composeRule.onAllNodes(hasText(text)).fetchSemanticsNodes()
         check(nodes.isNotEmpty()) { "Expected text node '$text' to exist." }
@@ -344,6 +388,21 @@ class TripsScreenStateTest {
             region = "강원",
             summary = "2인 기준 탐방 코스",
             checklist = listOf("쌍안경", "물"),
+            accommodationOptions =
+                listOf(
+                    AccommodationOptionDto(
+                        name = "DMZ 게스트하우스",
+                        type = "guesthouse",
+                        address = "강원 철원군 생태길 1",
+                        distanceKm = 3.2,
+                        priceMinKrw = 50_000,
+                        priceMaxKrw = 70_000,
+                        parkingAvailable = true,
+                        phone = "033-000-0000",
+                        bookingUrl = "https://example.com/dmz-guesthouse",
+                        source = "test",
+                    ),
+                ),
             daysPlan =
                 listOf(
                     TripDayPlanDto(

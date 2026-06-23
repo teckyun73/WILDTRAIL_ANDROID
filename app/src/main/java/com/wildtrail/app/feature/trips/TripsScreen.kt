@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.wildtrail.app.data.dto.AccommodationOptionDto
 import com.wildtrail.app.data.dto.SpeciesSummaryDto
 import com.wildtrail.app.data.dto.TripPlanResponseDto
 import com.wildtrail.app.feature.species.SpeciesUiState
@@ -318,7 +319,9 @@ private fun TripPreferenceControls(
             options =
                 listOf(
                     "guesthouse" to "게스트하우스",
+                    "pension" to "펜션",
                     "hotel" to "호텔",
+                    "motel" to "모텔",
                     "camping" to "캠핑",
                 ),
             onValueChange = onAccommodationChange,
@@ -554,6 +557,7 @@ private fun TripPlanPanel(
             }
         }
         RoutePreviewPanel(plan, onOpenNativeMap = onOpenNativeMap)
+        AccommodationOptionsPanel(plan.accommodationOptions)
         Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("비용", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -589,6 +593,88 @@ private fun TripPlanPanel(
                 plan.checklist.forEach { Text("· $it") }
                 Text(plan.disclaimer, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun AccommodationOptionsPanel(options: List<AccommodationOptionDto>) {
+    Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text("주변 숙박", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(
+                    "관찰지 주변의 게스트하우스, 펜션, 호텔, 모텔, 캠핑 후보를 비교합니다.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (options.isEmpty()) {
+                TripDetailField("데이터", "숙박 후보가 아직 제공되지 않았습니다.")
+                TripDetailField("연동 후보", "한국관광공사 TourAPI, 지자체 숙박 공공데이터, 예약 포털 제휴 API")
+                TripDetailField("표시 항목", "예상 비용, 관찰지와의 거리, 주차 여부, 연락처, 주소")
+            } else {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    options
+                        .map { accommodationTypeLabel(it.type) }
+                        .distinct()
+                        .forEach { type ->
+                            RouteSummaryChip(type)
+                        }
+                }
+                options.forEachIndexed { index, option ->
+                    if (index > 0) HorizontalDivider()
+                    AccommodationOptionCard(option)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AccommodationOptionCard(option: AccommodationOptionDto) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Top,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(option.name, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    accommodationTypeLabel(option.type),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Forest,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+            Text(
+                formatAccommodationDistance(option.distanceKm),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        TripDetailField(
+            "예상 비용",
+            formatAccommodationPrice(
+                min = option.priceMinKrw,
+                max = option.priceMaxKrw,
+                perNight = option.pricePerNightKrw,
+            ),
+        )
+        TripDetailField("주차", formatParking(option.parkingAvailable))
+        TripDetailField("연락처", option.phone.ifBlank { "확인 필요" })
+        TripDetailField("주소", option.address.ifBlank { "주소 확인 필요" })
+        option.rating?.let { TripDetailField("평점", "%.1f".format(it)) }
+        if (option.bookingUrl.isNotBlank()) {
+            TripDetailField("예약/상세", option.bookingUrl)
+        }
+        if (option.source.isNotBlank()) {
+            TripDetailField("출처", option.source)
+        }
+        if (option.note.isNotBlank()) {
+            Text(option.note, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -823,3 +909,35 @@ private fun TripDetailField(
 }
 
 private fun formatKrw(value: Int): String = "%,d원".format(value)
+
+private fun formatAccommodationPrice(
+    min: Int?,
+    max: Int?,
+    perNight: Int?,
+): String =
+    when {
+        min != null && max != null && min != max -> "${formatKrw(min)} ~ ${formatKrw(max)}"
+        min != null -> formatKrw(min)
+        max != null -> formatKrw(max)
+        perNight != null -> "${formatKrw(perNight)} / 1박"
+        else -> "요금 확인 필요"
+    }
+
+private fun formatAccommodationDistance(distanceKm: Double?): String = distanceKm?.let { "%.1fkm".format(it) } ?: "거리 확인 필요"
+
+private fun formatParking(parkingAvailable: Boolean?): String =
+    when (parkingAvailable) {
+        true -> "가능"
+        false -> "불가 또는 제한"
+        null -> "확인 필요"
+    }
+
+private fun accommodationTypeLabel(type: String): String =
+    when (type.lowercase()) {
+        "guesthouse" -> "게스트하우스"
+        "pension" -> "펜션"
+        "hotel" -> "호텔"
+        "motel" -> "모텔"
+        "camping", "campground" -> "캠핑"
+        else -> type.ifBlank { "숙박" }
+    }

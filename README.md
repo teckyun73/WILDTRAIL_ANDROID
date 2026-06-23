@@ -21,7 +21,7 @@ This folder contains the first native Android implementation of WildTrail.
 - `GET /api/v1/sightings` observation record list
 - Android Photo Picker image selection
 - Local HTTP network security config for emulator development
-- Trip planner with native Google Maps screen and external map app route handoff
+- Trip planner with native Google Maps screen, external map app route handoff, and nearby accommodation candidates
 - JVM unit tests for network utilities, API retry/fallback, ViewModels, route generation, and map helper logic
 
 ## Open In Android Studio
@@ -143,6 +143,15 @@ Do not commit `org.gradle.java.home` to the project `gradle.properties`; it brea
 - Selected species detail shows description, habitat, diet, breeding season, active time, observation tips, and similar species
 - Selected species also loads related hotspots from `GET /api/v1/locations?species_id={species_id}`
 - Hotspot panel shows top recommendations, region, score, access level, fee, best months, transport note, and safety note
+
+### 여행
+
+- Generates trip plans with species, origin, days, budget, travelers, month, transport, accommodation, and difficulty inputs
+- Shows route preview, native Google Maps entry, and external map app handoff
+- Displays nearby accommodation candidates from backend `accommodation_options`
+- Accommodation cards support guesthouse, pension, hotel, motel, and camping categories
+- Accommodation cards show distance, expected price range or per-night price, parking status, phone, address, rating, booking/detail URL, source, and backend note
+- If no accommodation candidates are returned, the app shows the expected data sources and display fields for backend integration
 
 ### 기록
 
