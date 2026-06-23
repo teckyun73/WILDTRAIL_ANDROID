@@ -23,7 +23,7 @@ internal fun SpeciesRoute(
             tripsViewModel.prepareTripForSpecies(speciesId)
             onOpenTripsTab()
         },
-        onRefresh = { speciesViewModel.loadSpecies(settingsViewModel.apiBaseUrl, settingsViewModel::updateApiBaseUrl) },
+        onRefresh = { speciesViewModel.refreshSpeciesList(settingsViewModel.apiBaseUrl, settingsViewModel::updateApiBaseUrl) },
         onRetrySelectedSpecies = {
             speciesViewModel.selectedSpeciesId?.let {
                 speciesViewModel.loadSpeciesDetail(it, settingsViewModel.apiBaseUrl, settingsViewModel::updateApiBaseUrl)

@@ -13,7 +13,11 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
+import com.wildtrail.app.data.dto.CostBreakdownDto
 import com.wildtrail.app.data.dto.SpeciesSummaryDto
+import com.wildtrail.app.data.dto.TripDayItemDto
+import com.wildtrail.app.data.dto.TripDayPlanDto
+import com.wildtrail.app.data.dto.TripPlanResponseDto
 import com.wildtrail.app.feature.species.SpeciesUiState
 import com.wildtrail.app.feature.trips.TripUiState
 import com.wildtrail.app.feature.trips.TripsScreen
@@ -259,6 +263,49 @@ class TripsScreenStateTest {
         composeRule.onNodeWithTag("trip-budget").assertTextContains("150000")
     }
 
+    @Test
+    fun tripPlanCostPanelShowsTotalPerPersonAndMisc() {
+        composeRule.setContent {
+            WildTrailTheme {
+                TripsScreen(
+                    nativeMapPlan = null,
+                    onCloseNativeMap = {},
+                    speciesId = "lynx",
+                    onSpeciesIdChange = {},
+                    speciesState = SpeciesUiState.Ready(listOf(speciesFixture())),
+                    onSelectSpecies = {},
+                    onRefreshSpecies = {},
+                    origin = "서울역",
+                    onOriginChange = {},
+                    days = "2",
+                    onDaysChange = {},
+                    budget = "150000",
+                    onBudgetChange = {},
+                    travelers = "2",
+                    onTravelersChange = {},
+                    month = "5",
+                    onMonthChange = {},
+                    transport = "public",
+                    onTransportChange = {},
+                    accommodation = "guesthouse",
+                    onAccommodationChange = {},
+                    difficulty = "easy",
+                    onDifficultyChange = {},
+                    tripState = TripUiState.Ready(tripPlanFixture()),
+                    onPlanTrip = {},
+                    onOpenNativeMap = {},
+                    isLoading = false,
+                )
+            }
+        }
+
+        assertTextExists("2일 · 2명 · 총 120,000원 · 1인 60,000원")
+        composeRule.onNodeWithText("총 비용").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("1인 비용").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("기타").performScrollTo().assertIsDisplayed()
+        assertTextExists("12,000원")
+    }
+
     private fun assertTextExists(text: String) {
         val nodes = composeRule.onAllNodes(hasText(text)).fetchSemanticsNodes()
         check(nodes.isNotEmpty()) { "Expected text node '$text' to exist." }
@@ -282,5 +329,40 @@ class TripsScreenStateTest {
             category = "mammal",
             protectionGrade = "II",
             bestMonths = "4-10",
+        )
+
+    private fun tripPlanFixture() =
+        TripPlanResponseDto(
+            speciesId = "lynx",
+            speciesName = "삵",
+            origin = "서울역",
+            days = 2,
+            travelers = 2,
+            hotspotName = "DMZ 생태길",
+            hotspotLatitude = 38.1,
+            hotspotLongitude = 127.2,
+            region = "강원",
+            summary = "2인 기준 탐방 코스",
+            checklist = listOf("쌍안경", "물"),
+            daysPlan =
+                listOf(
+                    TripDayPlanDto(
+                        day = 1,
+                        title = "탐방",
+                        items = listOf(TripDayItemDto(time = "09:00", activity = "출발", location = "서울역")),
+                    ),
+                ),
+            costs =
+                CostBreakdownDto(
+                    transport = 50_000,
+                    accommodation = 30_000,
+                    food = 20_000,
+                    entryFee = 8_000,
+                    misc = 12_000,
+                    total = 120_000,
+                    perPerson = 60_000,
+                ),
+            disclaimer = "실제 현장 상황을 확인하세요.",
+            source = "test",
         )
 }

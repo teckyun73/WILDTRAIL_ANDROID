@@ -530,7 +530,7 @@ private fun TripPlanPanel(
                 }
                 Text(plan.summary)
                 Text(
-                    "${plan.days}일 · ${plan.travelers}명 · ${formatKrw(plan.costs.total)}",
+                    "${plan.days}일 · ${plan.travelers}명 · 총 ${formatKrw(plan.costs.total)} · 1인 ${formatKrw(plan.costs.perPerson)}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = Forest,
@@ -557,11 +557,13 @@ private fun TripPlanPanel(
         Surface(shape = RoundedCornerShape(8.dp), tonalElevation = 1.dp) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("비용", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                TripDetailField("총 비용", formatKrw(plan.costs.total))
                 TripDetailField("1인 비용", formatKrw(plan.costs.perPerson))
                 TripDetailField("교통", formatKrw(plan.costs.transport))
                 TripDetailField("숙박", formatKrw(plan.costs.accommodation))
                 TripDetailField("식비", formatKrw(plan.costs.food))
                 TripDetailField("입장료", formatKrw(plan.costs.entryFee))
+                TripDetailField("기타", formatKrw(plan.costs.misc))
             }
         }
         plan.daysPlan.forEach { day ->

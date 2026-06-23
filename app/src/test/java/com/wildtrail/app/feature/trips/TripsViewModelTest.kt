@@ -128,6 +128,22 @@ class TripsViewModelTest {
         }
 
     @Test
+    fun changingTripConditionsClearsExistingPlanAndNativeMap() =
+        runTest {
+            val plan = tripPlanFixture()
+            val viewModel = TripsViewModel { _, _, _ -> plan }
+            viewModel.planTrip("http://10.0.2.2:8000") {}
+            advanceUntilIdle()
+            viewModel.openNativeMap(plan)
+
+            viewModel.updateTripSpeciesId("falcon")
+
+            assertEquals("falcon", viewModel.tripSpeciesId)
+            assertEquals(TripUiState.Empty, viewModel.tripState)
+            assertNull(viewModel.nativeMapPlan)
+        }
+
+    @Test
     fun prepareTripForSpecies_setsSpeciesAndClearsState() {
         val viewModel = TripsViewModel()
 

@@ -64,6 +64,17 @@ class SpeciesViewModel(
         }
     }
 
+    fun refreshSpeciesList(
+        baseUrl: String,
+        onBaseUrlFallback: (String) -> Unit,
+    ) {
+        speciesSearch = ""
+        selectedSpeciesId = null
+        speciesDetailState = SpeciesDetailUiState.Empty
+        hotspotState = HotspotUiState.Empty
+        loadSpecies(baseUrl, onBaseUrlFallback)
+    }
+
     fun loadSpeciesDetail(
         speciesId: String,
         baseUrl: String,

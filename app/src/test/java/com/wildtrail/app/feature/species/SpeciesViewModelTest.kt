@@ -128,15 +128,43 @@ class SpeciesViewModelTest {
         assertEquals("삵", viewModel.speciesSearch)
     }
 
-    private fun speciesSummaryFixture() =
-        SpeciesSummaryDto(
-            id = "lynx",
-            commonName = "삵",
-            scientificName = "Prionailurus bengalensis",
-            category = "mammal",
-            protectionGrade = "II",
-            bestMonths = "4-10",
-        )
+    @Test
+    fun refreshSpeciesList_clearsSearchSelectionAndDetailState() =
+        runTest {
+            val refreshed = listOf(speciesSummaryFixture(id = "falcon", commonName = "황조롱이"))
+            val viewModel =
+                SpeciesViewModel(
+                    loadSpeciesList = { _, _ -> refreshed },
+                    loadSpeciesDetailById = { _, _, _ -> speciesDetailFixture() },
+                    loadHotspotsBySpeciesId = { _, _, _ -> listOf(hotspotFixture()) },
+                )
+
+            viewModel.updateSpeciesSearch("황조롱이")
+            viewModel.loadSpeciesDetail("falcon", "http://10.0.2.2:8000") {}
+            advanceUntilIdle()
+
+            viewModel.refreshSpeciesList("http://10.0.2.2:8000") {}
+            advanceUntilIdle()
+
+            val state = viewModel.speciesState as SpeciesUiState.Ready
+            assertEquals("", viewModel.speciesSearch)
+            assertEquals(null, viewModel.selectedSpeciesId)
+            assertEquals(SpeciesDetailUiState.Empty, viewModel.speciesDetailState)
+            assertEquals(HotspotUiState.Empty, viewModel.hotspotState)
+            assertSame(refreshed, state.species)
+        }
+
+    private fun speciesSummaryFixture(
+        id: String = "lynx",
+        commonName: String = "삵",
+    ) = SpeciesSummaryDto(
+        id = id,
+        commonName = commonName,
+        scientificName = "Prionailurus bengalensis",
+        category = "mammal",
+        protectionGrade = "II",
+        bestMonths = "4-10",
+    )
 
     private fun speciesDetailFixture() =
         SpeciesDetailDto(

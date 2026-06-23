@@ -46,43 +46,52 @@ class TripsViewModel(
 
     fun updateTripSpeciesId(value: String) {
         tripSpeciesId = value
+        clearPlanResult()
     }
 
     fun selectTripSpecies(speciesId: String) {
         tripSpeciesId = speciesId
-        tripState = TripUiState.Empty
+        clearPlanResult()
     }
 
     fun updateTripOrigin(value: String) {
         tripOrigin = value
+        clearPlanResult()
     }
 
     fun updateTripDays(value: String) {
         tripDays = value.filter(Char::isDigit).take(1)
+        clearPlanResult()
     }
 
     fun updateTripBudget(value: String) {
         tripBudget = value.filter(Char::isDigit).take(9)
+        clearPlanResult()
     }
 
     fun updateTripTravelers(value: String) {
         tripTravelers = value.filter(Char::isDigit).take(2)
+        clearPlanResult()
     }
 
     fun updateTripMonth(value: String) {
         tripMonth = value.filter(Char::isDigit).take(2)
+        clearPlanResult()
     }
 
     fun updateTripTransport(value: String) {
         tripTransport = value
+        clearPlanResult()
     }
 
     fun updateTripAccommodation(value: String) {
         tripAccommodation = value
+        clearPlanResult()
     }
 
     fun updateTripDifficulty(value: String) {
         tripDifficulty = value
+        clearPlanResult()
     }
 
     fun openNativeMap(plan: TripPlanResponseDto) {
@@ -95,7 +104,7 @@ class TripsViewModel(
 
     fun prepareTripForSpecies(speciesId: String) {
         tripSpeciesId = speciesId
-        tripState = TripUiState.Empty
+        clearPlanResult()
     }
 
     fun planTrip(
@@ -127,5 +136,10 @@ class TripsViewModel(
                     TripUiState.Error(error.toUserFacingMessage("여행 계획을 생성할 수 없습니다."))
                 }
         }
+    }
+
+    private fun clearPlanResult() {
+        tripState = TripUiState.Empty
+        nativeMapPlan = null
     }
 }
