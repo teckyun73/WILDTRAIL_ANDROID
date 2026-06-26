@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -348,6 +349,10 @@ class TripsScreenStateTest {
         assertTextExists("50,000원 ~ 70,000원")
         assertTextExists("가능")
         assertTextExists("033-000-0000")
+        composeRule
+            .onNode(hasText("https://example.com/dmz-guesthouse").and(hasClickAction()))
+            .performScrollTo()
+            .assertIsDisplayed()
     }
 
     private fun assertTextExists(text: String) {

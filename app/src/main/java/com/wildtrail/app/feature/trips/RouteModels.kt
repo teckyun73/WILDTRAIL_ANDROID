@@ -136,6 +136,32 @@ fun openPlaceInMapApp(
     )
 }
 
+fun openWebUri(
+    context: Context,
+    uri: String,
+) {
+    val trimmedUri = uri.trim()
+    if (trimmedUri.isBlank()) {
+        Toast.makeText(context, "열 수 있는 예약 링크가 없습니다.", Toast.LENGTH_SHORT).show()
+        return
+    }
+    val browserUri =
+        if (trimmedUri.startsWith("http://") || trimmedUri.startsWith("https://")) {
+            trimmedUri
+        } else {
+            "https://$trimmedUri"
+        }
+    val intent =
+        Intent(Intent.ACTION_VIEW, Uri.parse(browserUri)).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+    try {
+        context.startActivity(intent)
+    } catch (_: ActivityNotFoundException) {
+        Toast.makeText(context, "예약 링크를 열 수 있는 브라우저 앱이 없습니다.", Toast.LENGTH_SHORT).show()
+    }
+}
+
 internal fun buildRouteMapUri(stops: List<RouteStop>): String? {
     val origin = stops.firstOrNull()
     val destination = stops.lastOrNull()

@@ -634,6 +634,7 @@ private fun AccommodationOptionsPanel(options: List<AccommodationOptionDto>) {
 
 @Composable
 private fun AccommodationOptionCard(option: AccommodationOptionDto) {
+    val context = LocalContext.current
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -668,7 +669,11 @@ private fun AccommodationOptionCard(option: AccommodationOptionDto) {
         TripDetailField("주소", option.address.ifBlank { "주소 확인 필요" })
         option.rating?.let { TripDetailField("평점", "%.1f".format(it)) }
         if (option.bookingUrl.isNotBlank()) {
-            TripDetailField("예약/상세", option.bookingUrl)
+            TripLinkField(
+                label = "예약/상세",
+                value = option.bookingUrl,
+                onClick = { openWebUri(context, option.bookingUrl) },
+            )
         }
         if (option.source.isNotBlank()) {
             TripDetailField("출처", option.source)
@@ -905,6 +910,26 @@ private fun TripDetailField(
     Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
         Text(label, style = MaterialTheme.typography.labelLarge, color = Forest, fontWeight = FontWeight.SemiBold)
         Text(value, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun TripLinkField(
+    label: String,
+    value: String,
+    onClick: () -> Unit,
+) {
+    if (value.isBlank()) return
+    Column(
+        modifier =
+            Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .clickable(onClick = onClick)
+                .padding(vertical = 3.dp),
+        verticalArrangement = Arrangement.spacedBy(3.dp),
+    ) {
+        Text(label, style = MaterialTheme.typography.labelLarge, color = Forest, fontWeight = FontWeight.SemiBold)
+        Text(value, style = MaterialTheme.typography.bodySmall, color = Forest)
     }
 }
 
